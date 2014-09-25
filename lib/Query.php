@@ -26,25 +26,33 @@ class Query implements IteratorAggregate, Countable
     private $alias;
 
     /**
+     * @var  string  The primary key to use for id shortcuts.
+     */
+    private $pk;
+
+    /**
      * @var  array  Private parts, heh.
      */
     private $parts = [];
 
     /**
-     * @var  mixed  A cached result, if a query has already been made.
-     */
-    private $result;
-
-    /**
      * Constructor.
      *
-     * @param   Doctrine\DBAL\Connection     $conn
-     * @param   string                       $pk
+     * @param   Doctrine\DBAL\Connection  $conn
+     * @param   string|array              $table
+     * @param   string                    $pk
      */
-    public function __construct($conn, $pk = 'id')
+    public function __construct($conn, $table, $pk = 'id')
     {
         $this->conn = $conn;
         $this->pk = $pk;
+
+        // Set an alias that we can use for turning columns like "foo"
+        // into something more specific like "alias.foo".
+        $this->alias = is_array($table) ? current($table) : $table;
+
+        // And set a default from based on the constructor.
+        $this->from($table);
     }
 
     /**
@@ -64,19 +72,20 @@ class Query implements IteratorAggregate, Countable
      */
     public function __clone()
     {
-        $this->result = null;
+        // Nothing to do, just take it all!
     }
 
     /**
-     * Finds a record by its id and returns the first
-     * value or throws an exception if none exists.
+     * Attempts to find a single record.
+     *
+     * If no record is returned, then an exception is thrown.
      *
      * @param   mixed  $query
      * @param   mixed  $conds
      * @throws  DomainException
      * @return  mixed
      */
-    public function find($query, $conds = [])
+    public function find($query = null, $conds = [])
     {
         $result = $this->first($query, $conds);
 
@@ -89,8 +98,9 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
-     * Finds a record by its id and returns the first
-     * value or returns null if none exists.
+     * Attempts to find a single record.
+     *
+     * If no record is returned, then null is returned.
      *
      * @param   mixed  $query
      * @param   mixed  $conds
@@ -98,15 +108,7 @@ class Query implements IteratorAggregate, Countable
      */
     public function first($query = null, $conds = [])
     {
-        if ($query && is_int($query)) {
-            $query = [$this->pk => $query];
-        }
-
-        if (!$this->hasPart('limit')) {
-            $this->limit(1);
-        }
-
-        $result = $this->all($query, $conds);
+        $result = $this->limit(1)->all($query, $conds);
 
         if ($result->valid()) {
             return $result->current();
@@ -114,11 +116,25 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
-     * Finds all records.
+     * Finds and returns a list of records limited by the
+     * amount passed.
+     *
+     * @param   mixed  $total
+     * @return  Mismatch\SQL\Result
+     */
+    public function take($limit)
+    {
+        $this->limit($limit);
+
+        return $this->all();
+    }
+
+    /**
+     * Finds and returns all of the records.
      *
      * @param   mixed  $query
      * @param   mixed  $conds
-     * @return  Doctrine\DBAL\Driver\Statement
+     * @return  Mismatch\SQL\Result
      */
     public function all($query = null, $conds = [])
     {
@@ -126,12 +142,9 @@ class Query implements IteratorAggregate, Countable
             $this->where($query, $conds);
         }
 
-        if (!$this->result) {
-            list($query, $params) = $this->toSelect();
-            $this->result = $this->raw($query, $params);
-        }
+        list($query, $params) = $this->toSelect();
 
-        return $this->result;
+        return $this->raw($query, $params);
     }
 
     /**
@@ -145,37 +158,47 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * Executes an insert, returning the last insert id.
+     *
+     * @param   array  $data
+     * @return  int
+     */
+    public function insert($data)
+    {
+        list($query, $params) = $this->toInsert($data);
+
+        $this->raw($query, $params);
+
+        return count($this->raw($query, $params));
+    }
+
+    /**
      * Executes an update, returning the number of rows affected.
      *
      * @param   mixed  $query
      * @param   mixed  $conds
      * @return  int
      */
-    public function update($query = null, $conds = [])
+    public function update($query = null, $conds = [], $data = [])
     {
-        if ($query && is_int($query)) {
-            $query = [$this->pk => $query];
+        // Updating records without any need for conds
+        if (func_num_args() === 2) {
+            $data = $conds;
+            $conds = [];
+        }
+
+        // Updating records without any need for a modifier query
+        if (func_num_args() === 1) {
+            $data = $query;
+            $query = null;
+            $conds = [];
         }
 
         if ($query) {
             $this->where($query, $conds);
         }
 
-        list($query, $params) = $this->toUpdate();
-
-        return count($this->raw($query, $params));
-    }
-
-    /**
-     * Executes an insert, returning the last insert id.
-     *
-     * @return  int
-     */
-    public function insert()
-    {
-        list($query, $params) = $this->toInsert();
-
-        $this->raw($query, $params);
+        list($query, $params) = $this->toUpdate($data);
 
         return count($this->raw($query, $params));
     }
@@ -189,10 +212,6 @@ class Query implements IteratorAggregate, Countable
      */
     public function delete($query = null, $conds = [])
     {
-        if ($query && is_int($query)) {
-            $query = [$this->pk => $query];
-        }
-
         if ($query) {
             $this->where($query, $conds);
         }
@@ -266,10 +285,6 @@ class Query implements IteratorAggregate, Countable
      */
     public function from($table)
     {
-        if (!$this->hasPart('from')) {
-            $this->alias = is_array($table) ? current($table) : $table;
-        }
-
         $this->addPart('from', (array) $table);
 
         return $this;
@@ -307,6 +322,10 @@ class Query implements IteratorAggregate, Countable
      */
     public function where($conds, array $binds = [])
     {
+        if (is_int($conds)) {
+            $conds = [$this->pk => $conds];
+        }
+
         $this->getComposite('where')->all($conds, $binds);
 
         return $this;
@@ -320,6 +339,10 @@ class Query implements IteratorAggregate, Countable
      */
     public function whereAny($conds, array $binds = [])
     {
+        if (is_int($conds)) {
+            $conds = [$this->pk => $conds];
+        }
+
         $this->getComposite('where')->any($conds, $binds);
 
         return $this;
@@ -395,16 +418,6 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
-     * Adds values to the list that should be changed.
-     *
-     * @param  array  $values
-     */
-    public function set(array $values)
-    {
-        return $this->addPart('set', $values);
-    }
-
-    /**
      * Implementation of IteratorAggregate
      *
      * @return  Iterator
@@ -472,11 +485,12 @@ class Query implements IteratorAggregate, Countable
     /**
      * Compiles the query as an UPDATE statement.
      *
+     * @param   array  $data
      * @return  array
      */
-    private function toUpdate()
+    private function toUpdate($data)
     {
-        $update = $this->compileUpdate();
+        $update = $this->compileUpdate($data);
         $query[] = 'UPDATE ' . $this->compileList('from', false);
         $query[] = 'SET ' . $update[0];
         $params = $update[1];
@@ -495,11 +509,12 @@ class Query implements IteratorAggregate, Countable
     /**
      * Compiles the query as an INSERT statement.
      *
+     * @param   array  $data
      * @return  array
      */
-    private function toInsert()
+    private function toInsert($data)
     {
-        $insert = $this->compileInsert();
+        $insert = $this->compileInsert($data);
         $query[] = 'INSERT INTO ' . $this->compileList('from', false);
         $query[] = $insert[0];
         $params = $insert[1];
@@ -618,7 +633,6 @@ class Query implements IteratorAggregate, Countable
     private function setPart($name, $value)
     {
         $this->parts[$name] = $value;
-        $this->result = null;
 
         return $this;
     }
@@ -633,7 +647,6 @@ class Query implements IteratorAggregate, Countable
     private function addPart($name, array $value)
     {
         $this->parts[$name] = array_merge($this->getPart($name, []), $value);
-        $this->result = null;
 
         return $this;
     }
@@ -650,8 +663,6 @@ class Query implements IteratorAggregate, Countable
         if (!$this->hasPart($name)) {
             $this->setPart($name, $default);
         }
-
-        $this->result = null;
 
         return $this->parts[$name];
     }
@@ -716,18 +727,15 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * @param   array  $data
      * @return  array
      */
-    private function compileUpdate()
+    private function compileUpdate($data)
     {
-        if (!$this->hasPart('set')) {
-            throw new DomainException();
-        }
-
         $parts = [];
         $binds = [];
 
-        foreach ($this->getPart('set') as $column => $value) {
+        foreach ($data as $column => $value) {
             $parts[] = sprintf('%s = ?', $column);
             $binds[] = $value;
         }
@@ -736,21 +744,16 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * @param   array  $data
      * @return  array
      */
-    private function compileInsert()
+    private function compileInsert($data)
     {
-        if (!$this->hasPart('set')) {
-            throw new DomainException(
-                'Cannot perform an insert if there are no values to insert. ' .
-                'Did you forget to call "set()" before calling "insert()"?');
-        }
-
         $columns = [];
         $values = [];
         $binds = [];
 
-        foreach ($this->getPart('set') as $column => $value) {
+        foreach ($data as $column => $value) {
             $columns[] = $column;
             $values[] = '?';
             $binds[] = $value;

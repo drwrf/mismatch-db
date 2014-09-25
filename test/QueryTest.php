@@ -13,10 +13,10 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         parent::setUp();
 
         $this->conn = Mockery::mock('Doctrine\DBAL\Connection');
+        $this->table = ['authors' => 'author'];
         $this->pk = 'id';
 
-        $this->subject = new Query($this->conn, $this->pk);
-        $this->subject->from(['authors' => 'author']);
+        $this->subject = new Query($this->conn, $this->table, $this->pk);
     }
 
     public function test_raw()
@@ -234,7 +234,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->assertQuery(
             'UPDATE authors SET role_id = ?', [1], [Type::INTEGER]);
 
-        $this->subject->set(['role_id' => 1])->update();
+        $this->subject->update(['role_id' => 1]);
     }
 
     public function test_update_where()
@@ -243,7 +243,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
             'UPDATE authors SET role_id = ? WHERE author.id = ?',
             [1, 2], [Type::INTEGER, Type::INTEGER]);
 
-        $this->subject->set(['role_id' => 1])->update(2);
+        $this->subject->update(2, ['role_id' => 1]);
     }
 
     public function test_insert()
@@ -252,7 +252,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
             'INSERT INTO authors (email) VALUES (?)',
             ['foo@example.com'], [\PDO::PARAM_STR]);
 
-        $this->subject->set(['email' => 'foo@example.com'])->insert();
+        $this->subject->insert(['email' => 'foo@example.com']);
     }
 
     public function test_delete()
