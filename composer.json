@@ -8,6 +8,12 @@
             "email": "hi@drwrf.com"
         }
     ],
+
+    "scripts": {
+        "test": "phpunit test",
+        "doc": "phpdoc -d lib -t doc"
+    },
+
     "autoload": {
         "psr-4": {
             "Mismatch\\DB\\": [ "lib" ]
@@ -16,15 +22,18 @@
             "lib/Expression.php"
         ]
     },
+
     "autoload-dev": {
         "psr-4": {
             "Mismatch\\DB\\": [ "test" ]
         }
     },
+
     "require": {
         "php": ">=5.4",
         "doctrine/dbal": "2.5.*@dev"
     },
+
     "require-dev": {
         "phpunit/phpunit": "4.0.*@dev",
         "phpunit/php-code-coverage": "2.0.*@dev",
@@ -32,6 +41,7 @@
         "mockery/mockery": "0.9",
         "phpdocumentor/phpdocumentor": "dev-master"
     },
+
     "archive": {
         "exclude": ["vendor", "test"]
     }
