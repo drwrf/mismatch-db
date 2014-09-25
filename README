@@ -1,46 +1,40 @@
 
 
-      Mismatch\DB - A simple library for complex SQL.
+         ███╗   ███╗██╗███████╗███╗   ███╗ █████╗ ████████╗ ██████╗██╗  ██╗
+         ████╗ ████║██║██╔════╝████╗ ████║██╔══██╗╚══██╔══╝██╔════╝██║  ██║╗
+         ██╔████╔██║██║███████╗██╔████╔██║███████║   ██║   ██║     ███████║╝
+         ██║╚██╔╝██║██║╚════██║██║╚██╔╝██║██╔══██║   ██║   ██║     ██╔══██║╗
+         ██║ ╚═╝ ██║██║███████║██║ ╚═╝ ██║██║  ██║   ██║   ╚██████╗██║  ██║╝
+         ╚═╝     ╚═╝╚═╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝
+
+         ╚                      M I S M A T C H \ D B                     ╝
+
+          ╚==============================================================╝
 
 
-    :-----------------------------------------------------------------------------:
+           The goal of Mismatch\DB is to make building and executing SQL
+           queries dead simple. It optimizes for the common scenarios,
+           while allowing you to fall back to straight SQL when necessary.
 
+           You see, SQL is actually pretty good at its job and you really
+           shouldn't have to work around your ORM to get at it.
 
-      The goal of Mismatch\DB is to make building and executing SQL
-      queries dead simple. It optimizes for the common scenarios, while
-      still allowing you to fall back to straight SQL when necessary.
+           Let's take a look.
 
-      You see, SQL is actually pretty good at its job and you shouldn't
-      have to work around your ORM to get at it.
+           <?php
 
-      Here's what you can expect.
+           use Mismatch\DB\Query;
+           use Mismatch\DB\Expression as e;
 
-        - Higher-order methods for finding records
-        - Robust support for complex expressions
-        - Transparent escaping of user input
-        - Awesome type inference
+           $authors = (new Query($conn, 'authors'))
+             ->order('name', 'asc')
+             ->where([
+               'signup' => e\after('2014-04-01')
+               'active' => true,
+             ]);
 
-
-    :-----------------------------------------------------------------------------:
-
-
-      As a quick example, let's find ten active authors who recently signed
-      up for our service, and let's order them by name.
-
-      <?php
-
-      use Mismatch\DB\Query;
-      use Mismatch\DB\Expression as e;
-
-      $authors = (new Query($conn, 'authors'))
-        ->order('name', 'asc')
-        ->where([
-          'signup' => e\after('2014-04-01')
-          'active' => true,
-        ]);
-
-      foreach ($authors as $author) {
-        // It's pretty easy
-      }
+           foreach ($authors as $author) {
+             // It's pretty easy
+           }
 
 
