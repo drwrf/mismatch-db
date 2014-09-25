@@ -2,14 +2,11 @@
 
 namespace Mismatch\DB;
 
-use Doctrine\DBAL\Types\Type;
 use Mismatch\DB\Expression as Expr;
 use Mismatch\DB\Result;
 use IteratorAggregate;
 use Countable;
 use Closure;
-use DateTime;
-use PDO;
 use DomainException;
 
 class Query implements IteratorAggregate, Countable
@@ -229,10 +226,9 @@ class Query implements IteratorAggregate, Countable
      */
     public function raw($query, array $params = [])
     {
-        $types = $this->prepareTypes($params);
-        $stmt = $this->conn->executeQuery($query, $params, $types);
+        $stmt = $this->conn->executeQuery($query, $params);
 
-        // Wrap the statement in our own type, so we have more
+        // Wrap the statement in our own result type, so we have more
         // control over the interface that it exposes.
         return $this->prepareStatement($stmt);
     }
@@ -806,51 +802,6 @@ class Query implements IteratorAggregate, Countable
         }
 
         return $query;
-    }
-
-    /**
-     * Creates a list of types from a list of parameters, so
-     * that PDO can properly translate the value for the RDBMS.
-     *
-     * @return  array
-     */
-    private function prepareTypes($params)
-    {
-        $types = [];
-
-        foreach ($params as $key => $value) {
-            $types[$key] = $this->detectType($value);
-        }
-
-        return $types;
-    }
-
-    /**
-     * Attempts to detect the doctrine type of a particular value.
-     *
-     * @param  mixed  $value
-     */
-    private function detectType($value)
-    {
-        if (is_integer($value)) {
-            return Type::INTEGER;
-        }
-
-        if (is_bool($value)) {
-            return Type::BOOLEAN;
-        }
-
-        if (is_array($value)) {
-            return is_integer(current($value))
-                ? Connection::PARAM_INT_ARRAY
-                : Connection::PARAM_STR_ARRAY;
-        }
-
-        if ($value instanceof DateTime) {
-            return Type::DATETIME;
-        }
-
-        return PDO::PARAM_STR;
     }
 
     /**

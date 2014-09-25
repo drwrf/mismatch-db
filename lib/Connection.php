@@ -2,8 +2,12 @@
 
 namespace Mismatch\DB;
 
+use Doctrine\DBAL\Cache\QueryCacheProfile as QCP;
 use Doctrine\DBAL\Connection as Base;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Types\Type;
+use DateTime;
+use PDO;
 
 /**
  * Handles connecting to the database.
@@ -70,4 +74,68 @@ class Connection extends Base
     {
         self::$pool = [];
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function executeQuery($query, array $params = [], $types = [], QCP $qcp = null)
+    {
+        // Allow passing nothing for the type information so we can
+        // figure it out for the caller. Often, this is better.
+        if (!$types && $params) {
+            $types = $this->prepareTypes($params);
+        }
+
+        return parent::executeQuery($query, $params, $types);
+    }
+
+    /**
+     * Creates a list of types from a list of parameters, so
+     * that PDO can properly translate the value for the RDBMS.
+     *
+     * @return  array
+     */
+    public function prepareTypes($params)
+    {
+        $types = [];
+
+        foreach ($params as $key => $value) {
+            $types[$key] = $this->detectType($value);
+        }
+
+        return $types;
+    }
+
+    /**
+     * Attempts to detect the doctrine type of a particular value.
+     *
+     * @param  mixed  $value
+     */
+    private function detectType($value)
+    {
+        if (is_integer($value)) {
+            return Type::INTEGER;
+        }
+
+        if (is_bool($value)) {
+            return Type::BOOLEAN;
+        }
+
+        if (is_null($value)) {
+            return PDO::PARAM_NULL;
+        }
+
+        if (is_array($value)) {
+            return is_integer(current($value))
+                ? Connection::PARAM_INT_ARRAY
+                : Connection::PARAM_STR_ARRAY;
+        }
+
+        if ($value instanceof DateTime) {
+            return Type::DATETIME;
+        }
+
+        return PDO::PARAM_STR;
+    }
+
 }

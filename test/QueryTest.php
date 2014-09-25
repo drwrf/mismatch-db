@@ -23,7 +23,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertQuery(
             'SELECT author.* FROM authors AS author WHERE author.name = ?',
-            ['test'], [\PDO::PARAM_STR]);
+            ['test']);
 
         $this->subject->raw(
             'SELECT author.* FROM authors AS author WHERE author.name = ?',
@@ -33,7 +33,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     public function test_bareAll()
     {
         $this->assertQuery(
-            'SELECT author.* FROM authors AS author', [], []);
+            'SELECT author.* FROM authors AS author', []);
 
         $this->subject->all();
     }
@@ -43,7 +43,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject->select(['COUNT(*)' => 'count']);
 
         $this->assertQuery(
-            'SELECT COUNT(*) AS count FROM authors AS author', [], []);
+            'SELECT COUNT(*) AS count FROM authors AS author', []);
 
         $this->subject->all();
     }
@@ -52,8 +52,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertQuery(
             'SELECT author.* FROM authors AS author '.
-            'WHERE author.id = ? LIMIT 1',
-            [1], [Type::INTEGER], [true]);
+            'WHERE author.id = ? LIMIT 1', [1], [true]);
         $this->assertLimit(1);
 
         $this->subject->find(1);
@@ -66,8 +65,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertQuery(
             'SELECT author.* FROM authors AS author '.
-            'WHERE author.id = ? LIMIT 1',
-            [1], [Type::INTEGER]);
+            'WHERE author.id = ? LIMIT 1', [1]);
         $this->assertLimit(1);
 
         $this->subject->find(1);
@@ -79,8 +77,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author '.
-            'WHERE author.name = ?',
-            ['test'], [\PDO::PARAM_STR]);
+            'WHERE author.name = ?', ['test']);
 
         $this->subject->all();
     }
@@ -92,7 +89,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->assertQuery(
             'SELECT author.* FROM authors AS author ' .
             'WHERE author.name = ? OR author.id = ?',
-            ['test', 1], [\PDO::PARAM_STR, Type::INTEGER]);
+            ['test', 1]);
 
         $this->subject->all();
     }
@@ -103,8 +100,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author '.
-            'WHERE name = ?',
-            ['test'], [\PDO::PARAM_STR]);
+            'WHERE name = ?', ['test']);
 
         $this->subject->all();
     }
@@ -115,8 +111,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author '.
-            'HAVING COUNT(bonus) = ?',
-            [1000], [Type::INTEGER]);
+            'HAVING COUNT(bonus) = ?', [1000]);
 
         $this->subject->all();
     }
@@ -128,7 +123,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->assertQuery(
             'SELECT author.* FROM authors AS author '.
             'HAVING author.name = ? OR author.id = ?',
-            ['test', 1], [\PDO::PARAM_STR, Type::INTEGER]);
+            ['test', 1]);
 
         $this->subject->all();
     }
@@ -139,8 +134,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author '.
-            'HAVING name = ?',
-            ['test'], [\PDO::PARAM_STR]);
+            'HAVING name = ?', ['test']);
 
         $this->subject->all();
     }
@@ -150,7 +144,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject->limit(1);
 
         $this->assertQuery(
-            'SELECT author.* FROM authors AS author LIMIT 1', [], []);
+            'SELECT author.* FROM authors AS author LIMIT 1', []);
         $this->assertLimit(1);
 
         $this->subject->all();
@@ -165,7 +159,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author ' .
-            'ORDER BY author.name ASC, author.id DESC', [], []);
+            'ORDER BY author.name ASC, author.id DESC', []);
 
         $this->subject->all();
     }
@@ -176,7 +170,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author ' .
-            'GROUP BY author.name, author.id', [], []);
+            'GROUP BY author.name, author.id', []);
 
         $this->subject->all();
     }
@@ -187,7 +181,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author ' .
-            'INNER JOIN books b', [], []);
+            'INNER JOIN books b', []);
 
         $this->subject->all();
     }
@@ -198,7 +192,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author ' .
-            'INNER JOIN books b ON (author.id = b.author_id)', [], []);
+            'INNER JOIN books b ON (author.id = b.author_id)', []);
 
         $this->subject->all();
     }
@@ -206,14 +200,13 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     public function test_joins_withExpression()
     {
         $expr = new Composite();
-        $expr->all(['b.author_id' => true]);
+        $expr->all(['b.author_id' => 1]);
 
         $this->subject->join('books b', $expr);
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author ' .
-            'INNER JOIN books b ON (b.author_id = ?)',
-            [true], [Type::BOOLEAN]);
+            'INNER JOIN books b ON (b.author_id = ?)', [1]);
 
         $this->subject->all();
     }
@@ -224,7 +217,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'SELECT author.* FROM authors AS author ' .
-            'LEFT OUTER JOIN books b', [], []);
+            'LEFT OUTER JOIN books b', []);
 
         $this->subject->all();
     }
@@ -232,7 +225,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     public function test_update()
     {
         $this->assertQuery(
-            'UPDATE authors SET role_id = ?', [1], [Type::INTEGER]);
+            'UPDATE authors SET role_id = ?', [1]);
 
         $this->subject->update(['role_id' => 1]);
     }
@@ -241,7 +234,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertQuery(
             'UPDATE authors SET role_id = ? WHERE author.id = ?',
-            [1, 2], [Type::INTEGER, Type::INTEGER]);
+            [1, 2]);
 
         $this->subject->update(2, ['role_id' => 1]);
     }
@@ -250,7 +243,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertQuery(
             'INSERT INTO authors (email) VALUES (?)',
-            ['foo@example.com'], [\PDO::PARAM_STR]);
+            ['foo@example.com']);
 
         $this->subject->insert(['email' => 'foo@example.com']);
     }
@@ -258,7 +251,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     public function test_delete()
     {
         $this->assertQuery(
-            'DELETE FROM authors', [], []);
+            'DELETE FROM authors', []);
 
         $this->subject->delete();
     }
@@ -268,7 +261,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject->from('books');
 
         $this->assertQuery(
-            'DELETE FROM authors, books', [], []);
+            'DELETE FROM authors, books', []);
 
         $this->subject->delete();
     }
@@ -276,9 +269,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     public function test_delete_withId()
     {
         $this->assertQuery(
-            'DELETE FROM authors '.
-            'WHERE author.id = ?',
-            [1], [Type::INTEGER], [true]);
+            'DELETE FROM authors WHERE author.id = ?', [1]);
 
         $this->subject->delete(1);
     }
@@ -289,7 +280,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->assertQuery(
             'DELETE FROM authors WHERE author.name = ?',
-            ['test'], [\PDO::PARAM_STR]);
+            ['test']);
 
         $this->subject->delete();
     }
@@ -299,7 +290,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject->limit(1);
 
         $this->assertQuery(
-            'DELETE FROM authors LIMIT 1', [], []);
+            'DELETE FROM authors LIMIT 1', []);
         $this->assertLimit(1);
 
         $this->subject->delete();
@@ -310,7 +301,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject->from('books')->join('books');
 
         $this->assertQuery(
-            'DELETE FROM authors, books INNER JOIN books', [], []);
+            'DELETE FROM authors, books INNER JOIN books', []);
 
         $this->subject->delete();
     }
@@ -324,7 +315,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
             });
     }
 
-    public function assertQuery($sql, $params, $types, $result = [])
+    public function assertQuery($sql, $params, $result = [])
     {
         $stmt = Mockery::mock('Doctrine\DBAL\Driver\Statement');
         $stmt->shouldReceive('rowCount')
@@ -334,7 +325,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->conn
             ->shouldReceive('executeQuery')
-            ->with($sql, $params, $types)
+            ->with($sql, $params)
             ->andReturn($stmt);
     }
 }
