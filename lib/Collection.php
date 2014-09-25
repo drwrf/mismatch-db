@@ -1,30 +1,49 @@
 <?php
 
+/**
+ * This file is part of Mismatch.
+ *
+ * @author   ♥ <hi@drwrf.com>
+ * @license  MIT
+ */
 namespace Mismatch\DB;
 
+use Doctrine\DBAL\Driver\Statement;
 use Countable;
 use Iterator;
 use PDO;
 use UnexpectedValueException;
 
+/**
+ * Represents a collection of results from a query.
+ */
 class Collection implements Iterator, Countable
 {
     /**
-     * @var  Doctrine\DBAL\Driver\Statement
+     * The statement that this collection wraps over.
+     *
+     * @var  Statement
      */
     private $stmt;
 
     /**
+     * The strategy to use when returning individual results.
+     *
      * @var  string
      */
-    private $mode = 'array';
+    private $strategy = 'array';
 
     /**
+     * The current position we're at in the list of results.
+     *
      * @var  int
      */
     private $position = 0;
 
     /**
+     * A cached list of results, used in case we iterate over this
+     * collection more than one time.
+     *
      * @var  array
      */
     private $results = [];
@@ -32,22 +51,31 @@ class Collection implements Iterator, Countable
     /**
      * Constructor.
      *
-     * @param  Doctrine\DBAL\Driver\Statement  $stmt
+     * @param  Statement  $stmt
      */
-    public function __construct($stmt)
+    public function __construct(Statement $stmt)
     {
         $this->stmt = $stmt;
     }
 
     /**
-     * Allows choosing a mode to fetch the data as.
+     * Affords choosing a strategy to fetch the data as.
      *
-     * @param   string  $mode
+     * Available strategies include:
+     *
+     *  - `array` - Return each result as an associative array
+     *  - `object` - Return each result as an instance of StdClass
+     *  - A valid callable, in which case the result will be passed
+     *    as the first argument to the callable, for each result.
+     *  - A valid class name, in which case the result will be passed
+     *    to the class' constructor, and the instance will be returned.
+     *
+     * @param   string  $strategy
      * @return  $this
      */
-    public function fetchAs($mode)
+    public function fetchAs($strategy)
     {
-        $this->mode = $mode;
+        $this->strategy = $strategy;
 
         return $this;
     }
@@ -55,7 +83,7 @@ class Collection implements Iterator, Countable
     /**
      * Implementation of Iterator.
      *
-     * @see  http://php.net/manual/en/class.iterator.php
+     * @link  http://php.net/manual/en/class.iterator.php
      */
     public function rewind()
     {
@@ -65,7 +93,7 @@ class Collection implements Iterator, Countable
     /**
      * Implementation of Iterator.
      *
-     * @see  http://php.net/manual/en/class.iterator.php
+     * @link  http://php.net/manual/en/class.iterator.php
      */
     public function valid()
     {
@@ -86,7 +114,7 @@ class Collection implements Iterator, Countable
     /**
      * Implementation of Iterator.
      *
-     * @see  http://php.net/manual/en/class.iterator.php
+     * @link  http://php.net/manual/en/class.iterator.php
      */
     public function current()
     {
@@ -98,7 +126,7 @@ class Collection implements Iterator, Countable
     /**
      * Implementation of Iterator.
      *
-     * @see  http://php.net/manual/en/class.iterator.php
+     * @link  http://php.net/manual/en/class.iterator.php
      */
     public function key()
     {
@@ -108,7 +136,7 @@ class Collection implements Iterator, Countable
     /**
      * Implementation of Iterator.
      *
-     * @see  http://php.net/manual/en/class.iterator.php
+     * @link  http://php.net/manual/en/class.iterator.php
      */
     public function next()
     {
@@ -118,7 +146,9 @@ class Collection implements Iterator, Countable
     /**
      * Implementation of the Countable interface.
      *
-     * @see http://php.net/manual/en/class.countable.php
+     * @param  mixed  $mode
+     * @return int
+     * @link   http://php.net/manual/en/class.countable.php
      */
     public function count($mode = COUNT_NORMAL)
     {
@@ -130,21 +160,27 @@ class Collection implements Iterator, Countable
      *
      * @param   array  $result
      * @return  mixed
+     * @api
      */
     protected function mapResult(array $result)
     {
-        if ($this->mode === 'array') {
+        if ($this->strategy === 'array') {
             return $result;
         }
 
-        if ($this->mode === 'object') {
+        if ($this->strategy === 'object') {
             return (object) $result;
         }
 
-        if (class_exists($this->mode)) {
-            return new $this->mode($result);
+        if (is_callable($this->strategy)) {
+            return call_user_func($this->strategy, $result);
         }
 
-        throw new UnexpectedValueException(sprintf('Invalid mode "%s".', $mode));
+        if (class_exists($this->strategy)) {
+            return new $this->strategy($result);
+        }
+
+        throw new UnexpectedValueException(
+            sprintf('Invalid strategy "%s".', $this->strategy));
     }
 }

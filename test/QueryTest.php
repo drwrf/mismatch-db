@@ -236,7 +236,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
             'UPDATE authors SET role_id = ? WHERE author.id = ?',
             [1, 2]);
 
-        $this->subject->update(2, ['role_id' => 1]);
+        $this->subject->update(['role_id' => 1], 2);
     }
 
     public function test_insert()

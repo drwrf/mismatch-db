@@ -1,7 +1,16 @@
 <?php
 
+/**
+ * This file is part of Mismatch.
+ *
+ * @author   ♥ <hi@drwrf.com>
+ * @license  MIT
+ */
 namespace Mismatch\DB\Expression;
 
+/**
+ * Interface for all expressions.
+ */
 interface ExpressionInterface
 {
     /**

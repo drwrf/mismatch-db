@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdoc>
+  <parser>
+    <default-package-name>mismatch-db</default-package-name>
+    <target>doc</target>
+    <visibility>public,protected</visibility>
+  </parser>
+  <transformer>
+    <target>doc</target>
+  </transformer>
+  <files>
+    <directory>lib</directory>
+    <directory>vendor/doctrine/dbal/lib/Doctrine</directory>
+  </files>
+</phpdoc>

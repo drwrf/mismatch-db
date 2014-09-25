@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * This file is part of Mismatch.
+ *
+ * @author   ♥ <hi@drwrf.com>
+ * @license  MIT
+ */
 namespace Mismatch\DB;
 
 use Doctrine\DBAL\Cache\QueryCacheProfile as QCP;
@@ -19,18 +25,19 @@ use PDO;
  * As an example, let's take a look at connecting to an in-memory instance
  * of SQLite.
  *
- * <code>
+ * ```php
  * $conn = Connection::create([
  *   'driver' => 'pdo_sqlite',
  *   'memory' => true,
  * ]);
- * </code>
+ * ```
  *
- * Mismatch\DB supports all of the databases that Doctrine's DBAL supports.
- * As such, you can refer to the Doctrine\DBAL documentation for the specifics
- * on connecting to various databases.
+ * You can easily connect to all of the databases that Doctrine's DBAL supports.
+ * As such, you can refer to the [Doctrine\DBAL][dbal-docs] documentation
+ * for the specifics on connecting to various databases.
  *
- * @see http://doctrine-dbal.readthedocs.org/en/latest/reference/configuration.html
+ * [dbal-docs]: http://doctrine-dbal.readthedocs.org/en/latest/reference/configuration.html
+ * @link http://doctrine-dbal.readthedocs.org/en/latest/reference/configuration.html
  */
 class Connection extends Base
 {
@@ -45,8 +52,9 @@ class Connection extends Base
      * If a connection has already been made using the configuration
      * then that same instance will be returned.
      *
-     * @param   array  $config
-     * @return  Mismatch\DB\Connection
+     * @param   array  $config  The config to use for connecting to the DB
+     * @return  Connection
+     * @api
      */
     public static function create(array $config)
     {
@@ -69,6 +77,8 @@ class Connection extends Base
 
     /**
      * Resets the connection pool.
+     *
+     * @api
      */
     public static function reset()
     {
@@ -93,9 +103,10 @@ class Connection extends Base
      * Creates a list of types from a list of parameters, so
      * that PDO can properly translate the value for the RDBMS.
      *
+     * @param   array  $params  A list of params to detect types on.
      * @return  array
      */
-    public function prepareTypes($params)
+    public function prepareTypes(array $params)
     {
         $types = [];
 
@@ -137,5 +148,4 @@ class Connection extends Base
 
         return PDO::PARAM_STR;
     }
-
 }

@@ -11,7 +11,7 @@
 
     "scripts": {
         "test": "phpunit test",
-        "doc": "phpdoc -d lib -t doc"
+        "doc": "phpdoc"
     },
 
     "autoload": {

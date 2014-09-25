@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * This file is part of Mismatch.
+ *
+ * @author   ♥ <hi@drwrf.com>
+ * @license  MIT
+ */
 namespace Mismatch\DB\Expression;
 
 use Mismatch\DB\Expression as Expr;
@@ -10,6 +16,7 @@ use Mismatch\DB\Expression as Expr;
  * @param   string|array  $exprs
  * @param   array         $params
  * @return  Expr\Composite
+ * @api
  */
 function all($exprs, array $params = [])
 {
@@ -23,6 +30,7 @@ function all($exprs, array $params = [])
  * @param   string|array  $exprs
  * @param   array         $params
  * @return  Expr\Composite
+ * @api
  */
 function any($exprs, $params = [])
 {
@@ -33,14 +41,15 @@ function any($exprs, $params = [])
 /**
  * Returns a bare expression, allowing you to specify its meaning.
  *
- * <code>
+ * ```php
  * // As an example, here's how eq is implemented.
  * expr('%s = ?', ['foo']);
- * </code>
+ * ```
  *
  * @param   string  $expr
  * @param   array   $binds
  * @return  Expr\Expression
+ * @api
  */
 function expr($expr, $binds = [])
 {
@@ -52,6 +61,7 @@ function expr($expr, $binds = [])
  *
  * @param   string|array|Expr\Expression  $value
  * @return  Expr\Not
+ * @api
  */
 function not($value)
 {
@@ -63,6 +73,7 @@ function not($value)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function eq($value)
 {
@@ -74,6 +85,7 @@ function eq($value)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function in($value)
 {
@@ -85,6 +97,7 @@ function in($value)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function gt($value)
 {
@@ -96,6 +109,7 @@ function gt($value)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function gte($value)
 {
@@ -109,6 +123,7 @@ function gte($value)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function after($value)
 {
@@ -120,6 +135,7 @@ function after($value)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function lt($value)
 {
@@ -131,6 +147,7 @@ function lt($value)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function lte($value)
 {
@@ -144,6 +161,7 @@ function lte($value)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function before($value)
 {
@@ -155,6 +173,7 @@ function before($value)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function like($value)
 {
@@ -164,8 +183,10 @@ function like($value)
 /**
  * Returns a BETWEEN expression.
  *
- * @param   mixed  $value
+ * @param   mixed  $value1
+ * @param   mixed  $value2
  * @return  Expr\Expression
+ * @api
  */
 function between($value1, $value2)
 {
@@ -177,6 +198,7 @@ function between($value1, $value2)
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function blank()
 {
@@ -189,6 +211,7 @@ function blank()
  *
  * @param   mixed  $value
  * @return  Expr\Expression
+ * @api
  */
 function null()
 {
@@ -196,7 +219,7 @@ function null()
 }
 
 /**
- * @private
+ * @ignore
  */
 function columnize($column, $source)
 {

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * This file is part of Mismatch.
+ *
+ * @author   ♥ <hi@drwrf.com>
+ * @license  MIT
+ */
 namespace Mismatch\DB;
 
 use Mismatch\DB\Expression as Expr;
@@ -12,37 +18,37 @@ use DomainException;
 /**
  * Handles building an executing SQL queries.
  *
- * In conjunction with the factories provided by Mismatch\DB\Expression,
+ * In conjunction with the factories provided by `Mismatch\DB\Expression`,
  * this becomes a powerful tool for building the queries common to CRUD
  * operations in web applications.
  *
  * As a quick example, let's find ten active authors who recently signed
  * up for our service, and let's order them by name.
  *
- * <code>
+ * ```php
  * use Mismatch\DB\Query;
  * use Mismatch\DB\Expression as e;
-
+ *
+ * // We'll assume we've already created the connection elsewhere
  * $authors = (new Query($conn, 'authors'))
  *   ->order('name', 'asc')
  *   ->where([
  *     'signup' => e\after('2014-04-01')
  *     'active' => true,
  *   ]);
-
+ *
  * foreach ($authors as $author) {
- *   // It's pretty easy
+ *   // Do stuff!
  * }
- * </code>
+ * ```
  *
- *
- * ### Building queries
+ * ## Building queries
  *
  * After creating a new instance of your query class, you can start
  * chaining methods on to it to refine and filter results before they're
  * returned.
  *
- * <code>
+ * ```php
  * // Both where and whereAny support complex expressions (outlined in
  * // the section below. Also, where is AND while whereAny is OR.
  * $query->where(['email' => 'rl.stine@example.com']);
@@ -66,13 +72,14 @@ use DomainException;
  * $query->limit(10);
  * $query->order(['name' => 'asc']);
  * $query->group(['max']);
+ * ```
  *
- * ### Executing queries
+ * ## Executing queries
  *
  * Once you've built up your query, you can execute it. There are all kinds
  * of methods available for SELECT-based queries.
  *
- * <code>
+ * ```php
  * // Return a single author, or throw an exception.
  * $query->find();
  *
@@ -87,11 +94,11 @@ use DomainException;
  *
  * // Return a number of authors, not exceeding the passed limit of 10.
  * $query->take(10);
- * </code>
+ * ```
  *
  * There are also methods for modifying records.
  *
- * <code>
+ * ```php
  * // Insert a new record, returning the number of affected rows.
  * $query->insert(['name' => 'H. Preen']);
  *
@@ -100,16 +107,16 @@ use DomainException;
  *
  * // Delete records, returning number of affected rows.
  * $query->delete();
- * </code>
+ * ```
  *
  * As well as facilities for executing raw SQL.
  *
- * <code>
+ * ```php
  * $query->raw('SELECT * FROM books WHERE email = ?', ['foo@example.com']);
- * </code>
+ * ```
  *
  *
- * ### Complex expressions
+ * ## Complex expressions
  *
  * Each of `find`, `first`, `all`, `delete`, `where`, `whereAny`,
  * `having`, and `havingAny` take a few different types of expressions.
@@ -118,39 +125,39 @@ use DomainException;
  *
  * Take a look.
  *
- * <code>
- *   // You can filter by ID, which is useful for find, first, and delete
- *   $query->find(1);
+ * ```php
+ * // You can filter by ID, which is useful for find, first, and delete
+ * $query->find(1);
  *
- *   // You can filter by equality, which is useful for almost all methods
- *   $query->all(['active' => true]);
+ * // You can filter by equality, which is useful for almost all methods
+ * $query->all(['active' => true]);
  *
- *   // It'll even figure out IN statements for ya
- *   $query->all(['email' => [
- *     'rl.stine@example.com',
- *     'ka.applegate@example.com',
- *     'jk.rowling@example.com',
- *   ]]);
+ * // It'll even figure out IN statements for ya
+ * $query->all(['email' => [
+ *   'rl.stine@example.com',
+ *   'ka.applegate@example.com',
+ *   'jk.rowling@example.com',
+ * ]]);
  *
- *   // You can filter using raw SQL, which is often easiest
- *   // Hint: the second argument is used for escaped conditions
- *   $query->first('email = ? and active',
- *     ['richie.brautwurst@example.com']);
+ * // You can filter using raw SQL, which is often easiest
+ * // Hint: the second argument is used for escaped conditions
+ * $query->first('email = ? and active',
+ *   ['richie.brautwurst@example.com']);
  *
- *   // You can even filter by more complex expressions...
- *   use Mismatch\DB\Expression as e;
+ * // You can even filter by more complex expressions...
+ * use Mismatch\DB\Expression as e;
  *
- *   // Like the every-useful LIKE filter
- *   $query->where(['email' => e\like('%@example.com');
+ * // Like the every-useful LIKE filter
+ * $query->where(['email' => e\like('%@example.com');
  *
- *   // Or NOT, which comes up often
- *   $query->whereAny(['email' => e\not('el.james@example.com')]);
+ * // Or NOT, which comes up often
+ * $query->whereAny(['email' => e\not('el.james@example.com')]);
  *
- *   // Even IS NULL
- *   $query->delete(['email' => e\null()]);
- *
+ * // Even IS NULL
+ * $query->delete(['email' => e\null()]);
+ * ```
  */
-class Query implements IteratorAggregate, Countable
+class Query implements IteratorAggregate
 {
     /**
      * @var  Connection  The connection to make requests against.
@@ -221,6 +228,7 @@ class Query implements IteratorAggregate, Countable
      * @param   mixed  $conds
      * @throws  DomainException
      * @return  mixed
+     * @api
      */
     public function find($query = null, $conds = [])
     {
@@ -242,6 +250,7 @@ class Query implements IteratorAggregate, Countable
      * @param   mixed  $query
      * @param   mixed  $conds
      * @return  mixed
+     * @api
      */
     public function first($query = null, $conds = [])
     {
@@ -256,8 +265,9 @@ class Query implements IteratorAggregate, Countable
      * Finds and returns a list of records limited by the
      * amount passed.
      *
-     * @param   mixed  $total
-     * @return  Mismatch\DB\Collection
+     * @param   mixed  $limit
+     * @return  Collection
+     * @api
      */
     public function take($limit)
     {
@@ -271,7 +281,8 @@ class Query implements IteratorAggregate, Countable
      *
      * @param   mixed  $query
      * @param   mixed  $conds
-     * @return  Mismatch\DB\Collection
+     * @return  Collection
+     * @api
      */
     public function all($query = null, $conds = [])
     {
@@ -287,9 +298,12 @@ class Query implements IteratorAggregate, Countable
     /**
      * Returns the total number of records in the query.
      *
+     * @param   mixed  $query
+     * @param   mixed  $conds
      * @return  int
+     * @api
      */
-    public function count($mode = COUNT_NORMAL)
+    public function count($query = null, $conds = [])
     {
         return $this->all()->count();
     }
@@ -299,8 +313,9 @@ class Query implements IteratorAggregate, Countable
      *
      * @param   array  $data
      * @return  int
+     * @api
      */
-    public function insert($data)
+    public function insert(array $data)
     {
         list($query, $params) = $this->toInsert($data);
 
@@ -312,25 +327,14 @@ class Query implements IteratorAggregate, Countable
     /**
      * Executes an update, returning the number of rows affected.
      *
+     * @param   array  $data
      * @param   mixed  $query
      * @param   mixed  $conds
      * @return  int
+     * @api
      */
-    public function update($query = null, $conds = [], $data = [])
+    public function update(array $data, $query = null, $conds = [])
     {
-        // Updating records without any need for conds
-        if (func_num_args() === 2) {
-            $data = $conds;
-            $conds = [];
-        }
-
-        // Updating records without any need for a modifier query
-        if (func_num_args() === 1) {
-            $data = $query;
-            $query = null;
-            $conds = [];
-        }
-
         if ($query) {
             $this->where($query, $conds);
         }
@@ -346,6 +350,7 @@ class Query implements IteratorAggregate, Countable
      * @param   mixed  $query
      * @param   mixed  $conds
      * @return  int
+     * @api
      */
     public function delete($query = null, $conds = [])
     {
@@ -363,7 +368,8 @@ class Query implements IteratorAggregate, Countable
      *
      * @param   string  $query
      * @param   array   $params
-     * @return  Mismatch\DB\Collection
+     * @return  Collection
+     * @api
      */
     public function raw($query, array $params = [])
     {
@@ -378,10 +384,14 @@ class Query implements IteratorAggregate, Countable
      * Executes the passed callback inside of a transaction.
      *
      * @param   Closure  $fn
+     * @return  self
+     * @api
      */
     public function transactional(Closure $fn)
     {
         $this->conn->transactional($fn);
+
+        return $this;
     }
 
     /**
@@ -397,12 +407,14 @@ class Query implements IteratorAggregate, Countable
     /**
      * Chooses the columns to select in the result.
      *
-     * <code>
-     *     // Aliases are supported as array keys
-     *     $query->select(['column', 'column' => 'alias']);
-     * </code>
+     * ```php
+     * // Aliases are supported as array keys
+     * $query->select(['column', 'column' => 'alias']);
+     * ```
      *
-     * @param  array  $columns
+     * @param   array  $columns
+     * @return  self
+     * @api
      */
     public function select(array $columns)
     {
@@ -417,7 +429,8 @@ class Query implements IteratorAggregate, Countable
      * columns will be selected from this table.
      *
      * @param   mixed  $table
-     * @return  $this
+     * @return  self
+     * @api
      */
     public function from($table)
     {
@@ -432,16 +445,18 @@ class Query implements IteratorAggregate, Countable
      * If $join is an attribute that exists on the model, then
      * that attribute will be allowed to create the join.
      *
-     * <code>
+     * ```php
      * // INNER JOIN is added by default.
-     * Book::all()->join('authors a', ['a.id' => 'book.author_id']);
+     * $query->join('authors a', ['a.id' => 'book.author_id']);
      *
      * // Although different types of joins can be specified.
-     * Book::all()->join('LEFT OUTER JOIN authors a', ['a.id' => 'book.author_id']);
-     * </code>
+     * $query->join('LEFT OUTER JOIN authors a', ['a.id' => 'book.author_id']);
+     * ```
      *
      * @param  string  $table
      * @param  mixed   $conds
+     * @return self
+     * @api
      */
     public function join($table, $conds = [])
     {
@@ -455,6 +470,8 @@ class Query implements IteratorAggregate, Countable
      *
      * @param  mixed  $conds
      * @param  array  $binds
+     * @return self
+     * @api
      */
     public function where($conds, array $binds = [])
     {
@@ -472,6 +489,8 @@ class Query implements IteratorAggregate, Countable
      *
      * @param  mixed  $conds
      * @param  array  $binds
+     * @return self
+     * @api
      */
     public function whereAny($conds, array $binds = [])
     {
@@ -489,6 +508,8 @@ class Query implements IteratorAggregate, Countable
      *
      * @param  mixed  $conds
      * @param  array  $binds
+     * @return self
+     * @api
      */
     public function having($conds, array $binds = [])
     {
@@ -502,6 +523,8 @@ class Query implements IteratorAggregate, Countable
      *
      * @param  mixed  $conds
      * @param  array  $binds
+     * @return self
+     * @api
      */
     public function havingAny($conds, array $binds = [])
     {
@@ -513,7 +536,9 @@ class Query implements IteratorAggregate, Countable
     /**
      * Determines the offset of results.
      *
-     * @param  int  $limit
+     * @param  int  $offset
+     * @return self
+     * @api
      */
     public function offset($offset)
     {
@@ -526,6 +551,8 @@ class Query implements IteratorAggregate, Countable
      * Passing one will give you a single model back.
      *
      * @param  int  $limit
+     * @return self
+     * @api
      */
     public function limit($limit)
     {
@@ -536,6 +563,8 @@ class Query implements IteratorAggregate, Countable
      * Determines the columns to group by.
      *
      * @param  array  $columns
+     * @return self
+     * @api
      */
     public function group(array $columns)
     {
@@ -546,6 +575,9 @@ class Query implements IteratorAggregate, Countable
      * Determines the columns to order by.
      *
      * @param  array   $columns
+     * @param  string  $dir
+     * @return self
+     * @api
      */
     public function order($columns, $dir = null)
     {
@@ -560,6 +592,7 @@ class Query implements IteratorAggregate, Countable
      * Implementation of IteratorAggregate
      *
      * @return  Iterator
+     * @api
      */
     public function getIterator()
     {
@@ -571,6 +604,7 @@ class Query implements IteratorAggregate, Countable
      * it's returned to the caller.
      *
      * @param  Doctrine\DBAL\Driver\Statement  $stmt
+     * @api
      */
     protected function prepareStatement($stmt)
     {
