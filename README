@@ -1,40 +1,42 @@
 
 
-         ███╗   ███╗██╗███████╗███╗   ███╗ █████╗ ████████╗ ██████╗██╗  ██╗
-         ████╗ ████║██║██╔════╝████╗ ████║██╔══██╗╚══██╔══╝██╔════╝██║  ██║╗
-         ██╔████╔██║██║███████╗██╔████╔██║███████║   ██║   ██║     ███████║╝
-         ██║╚██╔╝██║██║╚════██║██║╚██╔╝██║██╔══██║   ██║   ██║     ██╔══██║╗
-         ██║ ╚═╝ ██║██║███████║██║ ╚═╝ ██║██║  ██║   ██║   ╚██████╗██║  ██║╝
-         ╚═╝     ╚═╝╚═╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝
+            ███╗   ███╗██╗███████╗███╗   ███╗ █████╗ ████████╗ ██████╗██╗  ██╗
+            ████╗ ████║██║██╔════╝████╗ ████║██╔══██╗╚══██╔══╝██╔════╝██║  ██║╗
+            ██╔████╔██║██║███████╗██╔████╔██║███████║   ██║   ██║     ███████║╝
+            ██║╚██╔╝██║██║╚════██║██║╚██╔╝██║██╔══██║   ██║   ██║     ██╔══██║╗
+            ██║ ╚═╝ ██║██║███████║██║ ╚═╝ ██║██║  ██║   ██║   ╚██████╗██║  ██║╝
+            ╚═╝     ╚═╝╚═╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝
 
-         ╚                      M I S M A T C H \ D B                     ╝
+            ╚                      M I S M A T C H \ D B                     ╝
 
-          ╚==============================================================╝
+             ╚==============================================================╝
 
 
-           The goal of Mismatch\DB is to make building and executing SQL
-           queries dead simple. It optimizes for the common scenarios,
-           while allowing you to fall back to straight SQL when necessary.
+              The goal of Mismatch\DB is to make building and executing SQL
+              queries dead simple. It optimizes for the common scenarios,
+              while allowing you to fall back to straight SQL when necessary.
 
-           You see, SQL is actually pretty good at its job and you really
-           shouldn't have to work around your ORM to get at it.
+              You see, SQL is actually pretty good at its job and you really
+              shouldn't have to work around your ORM to get at it.
 
-           Let's take a look.
+              Let's take a look.
 
-           <?php
+             ~--------------------------------------------------------------~
 
-           use Mismatch\DB\Query;
-           use Mismatch\DB\Expression as e;
+              <?php
 
-           $authors = (new Query($conn, 'authors'))
-             ->order('name', 'asc')
-             ->where([
-               'signup' => e\after('2014-04-01')
-               'active' => true,
-             ]);
+              use Mismatch\DB\Query;
+              use Mismatch\DB\Expression as e;
 
-           foreach ($authors as $author) {
-             // It's pretty easy
-           }
+              $authors = (new Query($conn, 'authors'))
+                ->order('name', 'asc')
+                ->where([
+                  'signup' => e\after('2014-04-01')
+                  'active' => true,
+                ]);
+
+              foreach ($authors as $author) {
+                // It's pretty easy
+              }
 
 
