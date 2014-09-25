@@ -100,6 +100,20 @@ class Connection extends Base
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function executeUpdate($query, array $params = [], array $types = [])
+    {
+        // Allow passing nothing for the type information so we can
+        // figure it out for the caller. Often, this is better.
+        if (!$types && $params) {
+            $types = $this->prepareTypes($params);
+        }
+
+        return parent::executeUpdate($query, $params, $types);
+    }
+
+    /**
      * Creates a list of types from a list of parameters, so
      * that PDO can properly translate the value for the RDBMS.
      *
