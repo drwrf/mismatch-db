@@ -3,3 +3,145 @@
 
     Mismatch\SQL - A simple library for complex SQL.
 
+
+    Overview
+    --------
+
+    The goal of Mismatch\SQL is to make building and executing SQL
+    queries dead simple. It optimizes for the common scenarios, while
+    still allowing you to fall back to straight SQL when necessary.
+
+    You see, SQL is actually pretty good at its job and you shouldn't
+    have to work around your ORM to get at it.
+
+    Here's what you can expect.
+
+     - Higher-order methods for finding records
+     - Robust support for complex expressions
+     - Transparent escaping of user input
+     - Awesome type inference
+
+    As a quick example, let's find ten active authors who recently signed
+    up for our service, and let's order them by name.
+
+      use Mismatch\SQL\Query;
+      use Mismatch\SQL\Expression as e;
+
+      $authors = (new Query($conn, 'authors'))
+        ->order('name', 'asc')
+        ->where([
+          'signup' => e\after('2014-04-01')
+          'active' => true,
+        ]);
+
+      foreach ($authors as $author) {
+        // It's pretty easy
+      }
+
+
+    --------
+    Querying
+
+    All querying is done through the "Mismatch\SQL\Query" class.
+
+      // We'll assume we've already set up a connection...
+      $query = new Mismatch\SQL\Query($conn, 'authors');
+
+    After you've instantiated your class, you can start querying. There
+    are all kinds of methods available for SELECT-based queries.
+
+      // Return a single author, or throw an exception.
+      $query->find();
+
+      // Return a single author without throwing an exception.
+      $query->first();
+
+      // Return all records, without any sort of limit.
+      $query->all();
+
+      // Return the number of records that would be returned by all().
+      $query->count();
+
+      // Return a number of authors, not exceeding the passed limit of 10.
+      $query->take(10);
+
+    There are also methods for modifying records.
+
+      // Insert a new record, returning the number of affected rows.
+      $query->insert(['name' => 'H. Preen']);
+
+      // Update a records, returning the number of affected rows.
+      $query->update(['name' => 'H. Preen']);
+
+      // Delete records, returning number of affected rows.
+      $query->delete();
+
+    As well as facilities for executing raw SQL.
+
+      $query->raw('SELECT * FROM books WHERE email = ?', ['foo@example.com']);
+
+
+    Conditions
+    ----------
+
+    Almost all of the above methods take a few arguments that allow
+    you to filter the results before they're returned.
+
+      // You can filter by ID, which is useful for find, first, and delete
+      $query->find(1);
+
+      // You can filter by equality, which is useful for almost all methods
+      $query->all(['active' => true]);
+
+      // It'll even figure out IN statements for ya
+      $query->all(['email' => [
+        'rl.stine@example.com',
+        'ka.applegate@example.com',
+        'jk.rowling@example.com',
+      ]]);
+
+      // You can filter using raw SQL, which is often easiest
+      // Hint: the second argument is used for escaped conditions
+      $query->first('email = ? and active',
+        ['richie.brautwurst@example.com']);
+
+      // You can even filter by more complex expressions...
+      use Mismatch\SQL\Expression as e;
+
+      // Like the every-useful LIKE filter
+      $query->find(['email' => e\like('%@example.com');
+
+      // Or NOT, which comes up often
+      $query->find(['email' => e\not('el.james@example.com')]);
+
+      // Even IS NULL
+      $query->find(['email' => e\null()]);
+
+
+    Filtering
+    ---------
+
+    There are also many methods available for filtering and refining
+    your queries down to a finer result.
+
+      - select
+      - join
+      - where and whereAny
+      - having and havingAny
+      - offset and limit
+      - order
+      - group
+
+
+    Platforms
+    ---------
+
+    This library is a thin wrapper around Doctrine's DBAL, which means
+    it has support for the common RDBMS, including:
+
+      - MySQL
+      - Postgres
+      - Sqlite
+      - Oracle
+      - SQL Server
+
