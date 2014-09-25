@@ -11,6 +11,7 @@
 
              ╚=============================================================╝
 
+
              The goal of Mismatch\DB is to make building and executing SQL
              queries dead simple. It optimizes for the common scenarios,
              while allowing you to fall back to straight SQL when necessary.
@@ -20,8 +21,7 @@
 
              Let's take a look.
 
-               ~----------------------------------------------------------~
-
+                                            ~
              <?php
 
              use Mismatch\DB\Query;
