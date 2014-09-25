@@ -7,9 +7,9 @@
            ██║ ╚═╝ ██║██║███████║██║ ╚═╝ ██║██║  ██║   ██║   ╚██████╗██║  ██║╝
            ╚═╝     ╚═╝╚═╝╚══════╝╚═╝     ╚═╝╚═╝  ╚═╝   ╚═╝    ╚═════╝╚═╝  ╚═╝
 
-             A   S I M P L E   L I B R A R Y   F O R   C O M P L E X   S Q L
+            A   S I M P L E   L I B R A R Y   F O R   C O M P L E X   S Q L
 
-             ╚═════════════════════════════════════════════════════════════╝
+            ╚═════════════════════════════════════════════════════════════╝
 
              The goal of Mismatch\DB is to make building and executing SQL
              queries dead simple. It optimizes for the common scenarios,
