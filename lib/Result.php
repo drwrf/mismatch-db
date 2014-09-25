@@ -1,6 +1,6 @@
 <?php
 
-namespace Mismatch\SQL;
+namespace Mismatch\DB;
 
 use Countable;
 use Iterator;

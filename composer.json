@@ -1,5 +1,5 @@
 {
-    "name": "drwrf/mismatch-sql",
+    "name": "drwrf/mismatch-db",
     "description": "A simple library for complex SQL.",
     "license": "MIT",
     "authors": [
@@ -10,7 +10,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Mismatch\\SQL\\": [ "lib" ]
+            "Mismatch\\DB\\": [ "lib" ]
         },
         "files": [
             "lib/Expression.php"
@@ -18,7 +18,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Mismatch\\SQL\\": [ "test" ]
+            "Mismatch\\DB\\": [ "test" ]
         }
     },
     "require": {

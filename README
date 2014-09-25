@@ -1,13 +1,13 @@
 
 ==================================================================================~
 
-    Mismatch\SQL - A simple library for complex SQL.
+    Mismatch\DB - A simple library for complex SQL.
 
 
     Overview
     --------
 
-    The goal of Mismatch\SQL is to make building and executing SQL
+    The goal of Mismatch\DB is to make building and executing SQL
     queries dead simple. It optimizes for the common scenarios, while
     still allowing you to fall back to straight SQL when necessary.
 
@@ -24,8 +24,8 @@
     As a quick example, let's find ten active authors who recently signed
     up for our service, and let's order them by name.
 
-      use Mismatch\SQL\Query;
-      use Mismatch\SQL\Expression as e;
+      use Mismatch\DB\Query;
+      use Mismatch\DB\Expression as e;
 
       $authors = (new Query($conn, 'authors'))
         ->order('name', 'asc')
@@ -42,10 +42,10 @@
     --------
     Querying
 
-    All querying is done through the "Mismatch\SQL\Query" class.
+    All querying is done through the "Mismatch\DB\Query" class.
 
       // We'll assume we've already set up a connection...
-      $query = new Mismatch\SQL\Query($conn, 'authors');
+      $query = new Mismatch\DB\Query($conn, 'authors');
 
     After you've instantiated your class, you can start querying. There
     are all kinds of methods available for SELECT-based queries.
@@ -106,7 +106,7 @@
         ['richie.brautwurst@example.com']);
 
       // You can even filter by more complex expressions...
-      use Mismatch\SQL\Expression as e;
+      use Mismatch\DB\Expression as e;
 
       // Like the every-useful LIKE filter
       $query->find(['email' => e\like('%@example.com');

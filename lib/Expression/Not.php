@@ -1,8 +1,8 @@
 <?php
 
-namespace Mismatch\SQL\Expression;
+namespace Mismatch\DB\Expression;
 
-use Mismatch\SQL\Expression as e;
+use Mismatch\DB\Expression as e;
 
 class Not extends Expression
 {

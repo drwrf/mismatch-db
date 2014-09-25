@@ -1,8 +1,8 @@
 <?php
 
-namespace Mismatch\SQL\Expression;
+namespace Mismatch\DB\Expression;
 
-use Mismatch\SQL\Expression as Expr;
+use Mismatch\DB\Expression as Expr;
 
 function all($conds, $params = [])
 {

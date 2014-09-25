@@ -1,11 +1,11 @@
 <?php
 
-namespace Mismatch\SQL;
+namespace Mismatch\DB;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
-use Mismatch\SQL\Expression as Expr;
-use Mismatch\SQL\Result;
+use Mismatch\DB\Expression as Expr;
+use Mismatch\DB\Result;
 use IteratorAggregate;
 use Countable;
 use Closure;
@@ -120,7 +120,7 @@ class Query implements IteratorAggregate, Countable
      * amount passed.
      *
      * @param   mixed  $total
-     * @return  Mismatch\SQL\Result
+     * @return  Mismatch\DB\Result
      */
     public function take($limit)
     {
@@ -134,7 +134,7 @@ class Query implements IteratorAggregate, Countable
      *
      * @param   mixed  $query
      * @param   mixed  $conds
-     * @return  Mismatch\SQL\Result
+     * @return  Mismatch\DB\Result
      */
     public function all($query = null, $conds = [])
     {

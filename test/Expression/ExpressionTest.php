@@ -1,6 +1,6 @@
 <?php
 
-namespace Mismatch\SQL\Expression;
+namespace Mismatch\DB\Expression;
 
 class ExpressionTest extends \PHPUnit_Framework_TestCase
 {
