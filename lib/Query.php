@@ -9,6 +9,147 @@ use Countable;
 use Closure;
 use DomainException;
 
+/**
+ * Handles building an executing SQL queries.
+ *
+ * In conjunction with the factories provided by Mismatch\DB\Expression,
+ * this becomes a powerful tool for building the queries common to CRUD
+ * operations in web applications.
+ *
+ * As a quick example, let's find ten active authors who recently signed
+ * up for our service, and let's order them by name.
+ *
+ * <code>
+ * use Mismatch\DB\Query;
+ * use Mismatch\DB\Expression as e;
+
+ * $authors = (new Query($conn, 'authors'))
+ *   ->order('name', 'asc')
+ *   ->where([
+ *     'signup' => e\after('2014-04-01')
+ *     'active' => true,
+ *   ]);
+
+ * foreach ($authors as $author) {
+ *   // It's pretty easy
+ * }
+ * </code>
+ *
+ *
+ * ### Building queries
+ *
+ * After creating a new instance of your query class, you can start
+ * chaining methods on to it to refine and filter results before they're
+ * returned.
+ *
+ * <code>
+ * // Both where and whereAny support complex expressions (outlined in
+ * // the section below. Also, where is AND while whereAny is OR.
+ * $query->where(['email' => 'rl.stine@example.com']);
+ * $query->whereAny(['email' => 'ka.applegate@example.com']);
+ *
+ * // Both having and havingAny work exactly as where and whereAny.
+ * $query->having(['sum' => e\gt(5)]);
+ * $query->havingAny(['max' => e\lt(10)]);
+ *
+ * // Select specific columns. Aliases are supported as array keys
+ * $query->select(['column', 'column' => 'alias']);
+ *
+ * // INNER JOIN is added by default.
+ * $query->join('authors a', ['a.id' => 'book.author_id']);
+ *
+ * // Although different types of joins can be specified.
+ * $query->join('LEFT OUTER JOIN authors a', ['a.id' => 'book.author_id']);
+ *
+ * // The following work exactly as you'd expect.
+ * $query->offset(10);
+ * $query->limit(10);
+ * $query->order(['name' => 'asc']);
+ * $query->group(['max']);
+ *
+ * ### Executing queries
+ *
+ * Once you've built up your query, you can execute it. There are all kinds
+ * of methods available for SELECT-based queries.
+ *
+ * <code>
+ * // Return a single author, or throw an exception.
+ * $query->find();
+ *
+ * // Return a single author without throwing an exception.
+ * $query->first();
+ *
+ * // Return all records, without any sort of limit.
+ * $query->all();
+ *
+ * // Return the number of records that would be returned by all().
+ * $query->count();
+ *
+ * // Return a number of authors, not exceeding the passed limit of 10.
+ * $query->take(10);
+ * </code>
+ *
+ * There are also methods for modifying records.
+ *
+ * <code>
+ * // Insert a new record, returning the number of affected rows.
+ * $query->insert(['name' => 'H. Preen']);
+ *
+ * // Update a records, returning the number of affected rows.
+ * $query->update(['name' => 'H. Preen']);
+ *
+ * // Delete records, returning number of affected rows.
+ * $query->delete();
+ * </code>
+ *
+ * As well as facilities for executing raw SQL.
+ *
+ * <code>
+ * $query->raw('SELECT * FROM books WHERE email = ?', ['foo@example.com']);
+ * </code>
+ *
+ *
+ * ### Complex expressions
+ *
+ * Each of `find`, `first`, `all`, `delete`, `where`, `whereAny`,
+ * `having`, and `havingAny` take a few different types of expressions.
+ * The types of expressions they take can range from very terse (such as
+ * when selecting by primary key) to full-blown SQL.
+ *
+ * Take a look.
+ *
+ * <code>
+ *   // You can filter by ID, which is useful for find, first, and delete
+ *   $query->find(1);
+ *
+ *   // You can filter by equality, which is useful for almost all methods
+ *   $query->all(['active' => true]);
+ *
+ *   // It'll even figure out IN statements for ya
+ *   $query->all(['email' => [
+ *     'rl.stine@example.com',
+ *     'ka.applegate@example.com',
+ *     'jk.rowling@example.com',
+ *   ]]);
+ *
+ *   // You can filter using raw SQL, which is often easiest
+ *   // Hint: the second argument is used for escaped conditions
+ *   $query->first('email = ? and active',
+ *     ['richie.brautwurst@example.com']);
+ *
+ *   // You can even filter by more complex expressions...
+ *   use Mismatch\DB\Expression as e;
+ *
+ *   // Like the every-useful LIKE filter
+ *   $query->where(['email' => e\like('%@example.com');
+ *
+ *   // Or NOT, which comes up often
+ *   $query->whereAny(['email' => e\not('el.james@example.com')]);
+ *
+ *   // Even IS NULL
+ *   $query->delete(['email' => e\null()]);
+ *
+ */
 class Query implements IteratorAggregate, Countable
 {
     /**
