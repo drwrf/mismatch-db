@@ -7,7 +7,7 @@ use Iterator;
 use PDO;
 use UnexpectedValueException;
 
-class Result implements Iterator, Countable
+class Collection implements Iterator, Countable
 {
     /**
      * @var  Doctrine\DBAL\Driver\Statement

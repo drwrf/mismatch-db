@@ -3,7 +3,7 @@
 namespace Mismatch\DB;
 
 use Mismatch\DB\Expression as Expr;
-use Mismatch\DB\Result;
+use Mismatch\DB\Collection;
 use IteratorAggregate;
 use Countable;
 use Closure;
@@ -257,7 +257,7 @@ class Query implements IteratorAggregate, Countable
      * amount passed.
      *
      * @param   mixed  $total
-     * @return  Mismatch\DB\Result
+     * @return  Mismatch\DB\Collection
      */
     public function take($limit)
     {
@@ -271,7 +271,7 @@ class Query implements IteratorAggregate, Countable
      *
      * @param   mixed  $query
      * @param   mixed  $conds
-     * @return  Mismatch\DB\Result
+     * @return  Mismatch\DB\Collection
      */
     public function all($query = null, $conds = [])
     {
@@ -363,7 +363,7 @@ class Query implements IteratorAggregate, Countable
      *
      * @param   string  $query
      * @param   array   $params
-     * @return  Mismatch\DB\Result
+     * @return  Mismatch\DB\Collection
      */
     public function raw($query, array $params = [])
     {
@@ -574,7 +574,7 @@ class Query implements IteratorAggregate, Countable
      */
     protected function prepareStatement($stmt)
     {
-        return new Result($stmt);
+        return new Collection($stmt);
     }
 
     /**
