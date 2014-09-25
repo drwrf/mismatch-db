@@ -24,19 +24,24 @@ function eq($value)
     return new Expr\Eq($value);
 }
 
-function notEq($value)
-{
-    return new Expr\NotEq($value);
-}
-
 function in($value)
 {
     return new Expr\In($value);
 }
 
-function notIn($value)
+function not($value)
 {
-    return new Expr\Not(new Expr\In($value));
+    return new Expr\Eq($value);
+}
+
+function blank()
+{
+    return new Expr\Blank();
+}
+
+function null()
+{
+    return new Expr\Null();
 }
 
 function columnize($column, $source)

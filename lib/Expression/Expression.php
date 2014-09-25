@@ -29,7 +29,7 @@ class Expression implements ExpressionInterface
      */
     public function getExpr($column = null)
     {
-        return sprintf($this->expr, $column);
+        return str_replace('%s', $column, $this->expr);
     }
 
     /**
