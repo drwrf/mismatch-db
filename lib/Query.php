@@ -411,8 +411,12 @@ class Query implements IteratorAggregate, Countable
      *
      * @param  array   $columns
      */
-    public function order(array $columns)
+    public function order($columns, $dir = null)
     {
+        if (!is_array($columns)) {
+            $columns = [$columns => $dir];
+        }
+
         return $this->addPart('order', $columns);
     }
 
