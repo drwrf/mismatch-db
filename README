@@ -1,26 +1,26 @@
 
-==================================================================================~
+    ==============================================================================~
 
-    Mismatch\DB - A simple library for complex SQL.
+      Mismatch\DB - A simple library for complex SQL.
 
     ------------------------------------------------------------------------------~
 
-    The goal of Mismatch\DB is to make building and executing SQL
-    queries dead simple. It optimizes for the common scenarios, while
-    still allowing you to fall back to straight SQL when necessary.
+      The goal of Mismatch\DB is to make building and executing SQL
+      queries dead simple. It optimizes for the common scenarios, while
+      still allowing you to fall back to straight SQL when necessary.
 
-    You see, SQL is actually pretty good at its job and you shouldn't
-    have to work around your ORM to get at it.
+      You see, SQL is actually pretty good at its job and you shouldn't
+      have to work around your ORM to get at it.
 
-    Here's what you can expect.
+      Here's what you can expect.
 
-      - Higher-order methods for finding records
-      - Robust support for complex expressions
-      - Transparent escaping of user input
-      - Awesome type inference
+        - Higher-order methods for finding records
+        - Robust support for complex expressions
+        - Transparent escaping of user input
+        - Awesome type inference
 
-    As a quick example, let's find ten active authors who recently signed
-    up for our service, and let's order them by name.
+      As a quick example, let's find ten active authors who recently signed
+      up for our service, and let's order them by name.
 
     ------------------------------------------------------------------------------~
 
