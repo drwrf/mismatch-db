@@ -1,10 +1,9 @@
 
 
-
       Mismatch\DB - A simple library for complex SQL.
 
 
-    :-----------------------------------------------------------------------------~
+    :-----------------------------------------------------------------------------:
 
 
       The goal of Mismatch\DB is to make building and executing SQL
@@ -22,7 +21,7 @@
         - Awesome type inference
 
 
-    :-----------------------------------------------------------------------------~
+    :-----------------------------------------------------------------------------:
 
 
       As a quick example, let's find ten active authors who recently signed
