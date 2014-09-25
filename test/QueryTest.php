@@ -19,14 +19,25 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject = new Query($this->conn, $this->table, $this->pk);
     }
 
-    public function test_raw()
+    public function test_select()
     {
         $this->assertQuery(
             'SELECT author.* FROM authors AS author WHERE author.name = ?',
             ['test']);
 
-        $this->subject->raw(
+        $this->subject->select(
             'SELECT author.* FROM authors AS author WHERE author.name = ?',
+            ['test']);
+    }
+
+    public function test_modify()
+    {
+        $this->assertQuery(
+            'DELETE FROM authors AS author WHERE author.name = ?',
+            ['test']);
+
+        $this->subject->select(
+            'DELETE FROM authors AS author WHERE author.name = ?',
             ['test']);
     }
 
@@ -40,7 +51,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
     public function test_aggregateAll()
     {
-        $this->subject->select(['COUNT(*)' => 'count']);
+        $this->subject->columns(['COUNT(*)' => 'count']);
 
         $this->assertQuery(
             'SELECT COUNT(*) AS count FROM authors AS author', []);
@@ -327,5 +338,10 @@ class QueryTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('executeQuery')
             ->with($sql, $params)
             ->andReturn($stmt);
+
+        $this->conn
+            ->shouldReceive('executeUpdate')
+            ->with($sql, $params)
+            ->andReturn(1);
     }
 }

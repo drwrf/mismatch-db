@@ -59,7 +59,7 @@ use DomainException;
  * $query->havingAny(['max' => e\lt(10)]);
  *
  * // Select specific columns. Aliases are supported as array keys
- * $query->select(['column', 'column' => 'alias']);
+ * $query->columns(['column', 'column' => 'alias']);
  *
  * // INNER JOIN is added by default.
  * $query->join('authors a', ['a.id' => 'book.author_id']);
@@ -112,7 +112,8 @@ use DomainException;
  * As well as facilities for executing raw SQL.
  *
  * ```php
- * $query->raw('SELECT * FROM books WHERE email = ?', ['foo@example.com']);
+ * $query->select('SELECT * FROM books WHERE email = ?', ['foo@example.com']);
+ * $query->modify('DELETE FROM books WHERE email = ?', ['foo@example.com']);
  * ```
  *
  *
@@ -292,7 +293,7 @@ class Query implements IteratorAggregate
 
         list($query, $params) = $this->toSelect();
 
-        return $this->raw($query, $params);
+        return $this->select($query, $params);
     }
 
     /**
@@ -319,9 +320,9 @@ class Query implements IteratorAggregate
     {
         list($query, $params) = $this->toInsert($data);
 
-        $this->raw($query, $params);
+        $this->select($query, $params);
 
-        return count($this->raw($query, $params));
+        return $this->modify($query, $params);
     }
 
     /**
@@ -341,7 +342,7 @@ class Query implements IteratorAggregate
 
         list($query, $params) = $this->toUpdate($data);
 
-        return count($this->raw($query, $params));
+        return $this->modify($query, $params);
     }
 
     /**
@@ -360,24 +361,37 @@ class Query implements IteratorAggregate
 
         list($query, $params) = $this->toDelete();
 
-        return count($this->raw($query, $params));
+        return $this->modify($query, $params);
     }
 
     /**
-     * Executes a raw query.
+     * Executes a raw select query.
      *
      * @param   string  $query
      * @param   array   $params
      * @return  Collection
      * @api
      */
-    public function raw($query, array $params = [])
+    public function select($query, array $params = [])
     {
         $stmt = $this->conn->executeQuery($query, $params);
 
         // Wrap the statement in our own result type, so we have more
         // control over the interface that it exposes.
         return $this->prepareStatement($stmt);
+    }
+
+    /**
+     * Executes a raw modification query.
+     *
+     * @param   string  $query
+     * @param   array   $params
+     * @return  Collection
+     * @api
+     */
+    public function modify($query, array $params = [])
+    {
+        return $this->conn->executeUpdate($query, $params);
     }
 
     /**
@@ -409,14 +423,14 @@ class Query implements IteratorAggregate
      *
      * ```php
      * // Aliases are supported as array keys
-     * $query->select(['column', 'column' => 'alias']);
+     * $query->columns(['column', 'column' => 'alias']);
      * ```
      *
      * @param   array  $columns
      * @return  self
      * @api
      */
-    public function select(array $columns)
+    public function columns(array $columns)
     {
         return $this->addPart('select', $columns);
     }
