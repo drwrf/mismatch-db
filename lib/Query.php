@@ -396,7 +396,6 @@ class Query implements IteratorAggregate, Countable
         return $this->setPart('limit', $limit);
     }
 
-
     /**
      * Determines the columns to group by.
      *
