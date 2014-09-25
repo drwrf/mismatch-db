@@ -2,7 +2,6 @@
 
 namespace Mismatch\DB;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type;
 use Mismatch\DB\Expression as Expr;
 use Mismatch\DB\Result;
@@ -16,7 +15,7 @@ use DomainException;
 class Query implements IteratorAggregate, Countable
 {
     /**
-     * @var  Doctrine\DBAL\Connection  The connection to make requests against.
+     * @var  Connection  The connection to make requests against.
      */
     private $conn;
 
@@ -38,9 +37,9 @@ class Query implements IteratorAggregate, Countable
     /**
      * Constructor.
      *
-     * @param   Doctrine\DBAL\Connection  $conn
-     * @param   string|array              $table
-     * @param   string                    $pk
+     * @param   Connection    $conn
+     * @param   string|array  $table
+     * @param   string        $pk
      */
     public function __construct($conn, $table, $pk = 'id')
     {
@@ -226,7 +225,7 @@ class Query implements IteratorAggregate, Countable
      *
      * @param   string  $query
      * @param   array   $params
-     * @return  Doctrine\DBAL\Driver\Statement
+     * @return  Mismatch\DB\Result
      */
     public function raw($query, array $params = [])
     {
