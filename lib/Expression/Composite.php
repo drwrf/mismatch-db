@@ -2,7 +2,7 @@
 
 namespace Mismatch\SQL\Expression;
 
-use Mismatch\SQL\Expression as Expr;
+use Mismatch\SQL\Expression as e;
 
 class Composite implements ExpressionInterface
 {
@@ -148,15 +148,15 @@ class Composite implements ExpressionInterface
             }
 
             // Try and provide a table alias if possible.
-            $column = Expr\columnize($column, $this->alias);
+            $column = e\columnize($column, $this->alias);
 
             // And automatically detect an IN if possible.
             if (is_array($value)) {
-                $value = new In($value);
+                $value = e\in($value);
             }
 
             if (!($value instanceof Expression)) {
-                $value = new Eq($value);
+                $value = e\eq($value);
             }
 
             $ret[] = [

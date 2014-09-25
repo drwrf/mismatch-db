@@ -2,6 +2,8 @@
 
 namespace Mismatch\SQL\Expression;
 
+use Mismatch\SQL\Expression as e;
+
 class Not extends Expression
 {
     /**
@@ -15,7 +17,7 @@ class Not extends Expression
     public function __construct($child)
     {
         if (!($child instanceof Expression)) {
-            $child = is_array($child) ? new In($child) : new Eq($child);
+            $child = is_array($child) ? e\in($child) : e\eq($child);
         }
 
         parent::__construct('NOT (%s)', $child->getBinds());

@@ -2,6 +2,8 @@
 
 namespace Mismatch\SQL\Expression;
 
+use Mismatch\SQL\Expression as e;
+
 class CompositeTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
@@ -50,8 +52,8 @@ class CompositeTest extends \PHPUnit_Framework_TestCase
 
     public function test_comparator()
     {
-        $this->subject->all(['name' => new Eq('test')])
-                      ->any(['foo' => new Eq('bar')]);
+        $this->subject->all(['name' => e\eq('test')])
+                      ->any(['foo' => e\eq('bar')]);
 
         $expr = $this->subject->getExpr();
         $binds = $this->subject->getBinds();

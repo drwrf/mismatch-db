@@ -24,6 +24,16 @@ function not($value)
     return new Expr\Not($value);
 }
 
+function eq($value)
+{
+    return new Expr\Expression('%s = ?', [$value]);
+}
+
+function in($value)
+{
+    return new Expr\Expression('%s IN ?', [$value]);
+}
+
 function gt($value)
 {
     return new Expr\Expression('%s > ?', [$value]);
