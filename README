@@ -19,10 +19,12 @@
         - Transparent escaping of user input
         - Awesome type inference
 
+    ------------------------------------------------------------------------------~
+
       As a quick example, let's find ten active authors who recently signed
       up for our service, and let's order them by name.
 
-    ------------------------------------------------------------------------------~
+      <?php
 
       use Mismatch\DB\Query;
       use Mismatch\DB\Expression as e;
