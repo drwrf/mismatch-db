@@ -164,6 +164,7 @@ class Query implements IteratorAggregate
     use Query\Join;
     use Query\Where;
     use Query\Having;
+    use Query\Order;
     use Query\Limit;
 
     /**
@@ -454,23 +455,6 @@ class Query implements IteratorAggregate
     }
 
     /**
-     * Determines the columns to order by.
-     *
-     * @param  array   $columns
-     * @param  string  $dir
-     * @return self
-     * @api
-     */
-    public function order($columns, $dir = null)
-    {
-        if (!is_array($columns)) {
-            $columns = [$columns => $dir];
-        }
-
-        return $this->addPart('order', $columns);
-    }
-
-    /**
      * Implementation of IteratorAggregate
      *
      * @return  Iterator
@@ -527,8 +511,8 @@ class Query implements IteratorAggregate
             $params = array_merge($params, $expr[1]);
         }
 
-        if ($order = $this->compileList('order')) {
-            $query[] = 'ORDER BY ' . $order;
+        if ($order = $this->compileOrder()) {
+            $query[] = $order;
         }
 
         $query = implode(array_filter($query), ' ');

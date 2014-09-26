@@ -16,7 +16,7 @@ use Mismatch\DB\Expression\Composite;
 trait Join
 {
     /**
-     * @var  array  The tables to interact with.
+     * @var  array  The tables and conditions to join on
      */
     private $join = [];
 
