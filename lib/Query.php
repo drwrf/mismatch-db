@@ -161,6 +161,7 @@ use DomainException;
 class Query implements IteratorAggregate
 {
     use Query\Where;
+    use Query\Having;
 
     /**
      * @var  Connection  The connection to make requests against.
@@ -480,37 +481,6 @@ class Query implements IteratorAggregate
             $table => $conds,
         ]);
     }
-
-    /**
-     * Adds a set of AND HAVING filters to a query chain.
-     *
-     * @param  mixed  $conds
-     * @param  array  $binds
-     * @return self
-     * @api
-     */
-    public function having($conds, array $binds = [])
-    {
-        $this->getComposite('having')->all($conds, $binds);
-
-        return $this;
-    }
-
-    /**
-     * Adds a set of OR HAVING filters to a query chain.
-     *
-     * @param  mixed  $conds
-     * @param  array  $binds
-     * @return self
-     * @api
-     */
-    public function havingAny($conds, array $binds = [])
-    {
-        $this->getComposite('having')->any($conds, $binds);
-
-        return $this;
-    }
-
     /**
      * Determines the offset of results.
      *
@@ -618,8 +588,8 @@ class Query implements IteratorAggregate
             $query[] = 'GROUP BY ' . $group;
         }
 
-        if ($expr = $this->compileExpression('having')) {
-            $query[] = sprintf('HAVING %s', $expr[0]);
+        if ($expr = $this->compileHaving()) {
+            $query[] = $expr[0];
             $params = array_merge($params, $expr[1]);
         }
 
@@ -915,30 +885,6 @@ class Query implements IteratorAggregate
         $query = sprintf('(%s) VALUES (%s)', $columns, $values);
 
         return [$query, $binds];
-    }
-
-    /**
-     * Prepares an expression clause of a SQL query, including
-     * WHERE and HAVING clauses.
-     *
-     * @param  string  $type
-     * @param  array   $query
-     * @param  array   $params
-     */
-    private function compileExpression($type)
-    {
-        if (!$this->hasPart($type)) {
-            return;
-        }
-
-        $expr = $this->getPart($type);
-
-        if ($expr) {
-            return [
-                $expr->getExpr(),
-                $expr->getBinds(),
-            ];
-        }
     }
 
     /**
