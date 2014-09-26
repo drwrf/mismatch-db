@@ -23,10 +23,10 @@
                                             ~
              <?php
 
-             use Mismatch\DB\Query;
+             use Mismatch\DB\Query\Select;
              use Mismatch\DB\Expression as e;
 
-             $authors = (new Query($conn, 'authors'))
+             $authors = (new Select($conn, 'authors'))
                ->order('name', 'asc')
                ->where([
                  'signup' => e\after('2014-04-01')
