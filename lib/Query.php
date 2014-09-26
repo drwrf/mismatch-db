@@ -785,7 +785,7 @@ class Query implements IteratorAggregate
         }
 
         if ($on instanceof Expr\Composite) {
-            return $on->compile();
+            return [$on->getExpr(), $on->getBinds()];
         }
 
         $expr = new Expr\Composite();
@@ -794,7 +794,7 @@ class Query implements IteratorAggregate
             $expr->all([ sprintf('%s = %s', $owner, $related) ]);
         }
 
-        return $expr->compile();
+        return [$expr->getExpr(), $expr->getBinds()];
     }
 
     /**
@@ -970,7 +970,10 @@ class Query implements IteratorAggregate
         $expr = $this->getPart($type);
 
         if ($expr) {
-            return $expr->compile();
+            return [
+                $expr->getExpr(),
+                $expr->getBinds(),
+            ];
         }
     }
 

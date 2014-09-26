@@ -39,12 +39,12 @@ class Composite implements ExpressionInterface
      * Combines all expressions passed using an AND.
      *
      * @param  string|array  $expr
-     * @param  array         $binds
+     * @param  array         $params
      * @return $this
      */
-    public function all($expr, array $binds = [])
+    public function all($expr, array $params = [])
     {
-        $this->expr = array_merge($this->expr, $this->addConditions('AND', $expr, $binds));
+        $this->expr[] = ['AND', $expr, $params];
 
         return $this;
     }
@@ -53,12 +53,12 @@ class Composite implements ExpressionInterface
      * Combines all expressions passed using an AND.
      *
      * @param  string|array  $expr
-     * @param  array         $binds
+     * @param  array         $params
      * @return $this
      */
-    public function any($expr, array $binds = [])
+    public function any($expr, array $params = [])
     {
-        $this->expr = array_merge($this->expr, $this->addConditions('OR', $expr, $binds));
+        $this->expr[] = ['OR', $expr, $params];
 
         return $this;
     }
@@ -68,7 +68,7 @@ class Composite implements ExpressionInterface
      */
     public function getExpr($column = null)
     {
-        return $this->compile()[0];
+        return $this->compile()['expr'];
     }
 
     /**
@@ -76,7 +76,7 @@ class Composite implements ExpressionInterface
      */
     public function getBinds()
     {
-        return $this->compile()[1];
+        return $this->compile()['params'];
     }
 
     /**
@@ -97,25 +97,38 @@ class Composite implements ExpressionInterface
     /**
      * Compiles the expression into a string and a set of params.
      *
-     * @return [$expr, $binds]
+     * @return [$expr, $params]
      */
-    public function compile()
+    private function compile()
     {
-        if (!$this->compiled) {
-            $expr = '';
-            $binds = [];
+        if ($this->compiled) {
+            return $this->compiled;
+        }
 
-            foreach ($this->expr as $part) {
+        $expr = '';
+        $params = [];
+
+        foreach ($this->expr as $parts) {
+            // We store the arguments passed to any and all in an array
+            // and only unpack them when compiling, so now's the time.
+            $parts = $this->compilePart($parts[0], $parts[1], $parts[2]);
+
+            foreach ($parts as $part) {
+                // Only start adding the operands if we've started adding
+                // to the expression. Syntax errors would occur otherwise.
                 if ($expr) {
                     $expr .= ' ' . $part['type'] . ' ';
                 }
 
                 $expr .= $part['expr'];
-                $binds = array_merge($binds, $part['binds']);
+                $params = array_merge($params, $part['params']);
             }
-
-            $this->compiled = [$expr, $binds];
         }
+
+        $this->compiled = [
+            'expr' => $expr,
+            'params' => $params,
+        ];
 
         return $this->compiled;
     }
@@ -123,19 +136,16 @@ class Composite implements ExpressionInterface
     /**
      * @return  array
      */
-    private function addConditions($type, $expr, array $binds)
+    private function compilePart($type, $expr, array $params)
     {
         $ret = [];
-
-        // Ensure we mark the need for recompilation.
-        $this->compiled = false;
 
         // Passing a simple string like 'foo.bar = ?', [$bar] should
         // work fine, so we can skip the complicated array syntax.
         if (is_string($expr)) {
             return [[
                 'expr' => $expr,
-                'binds' => $binds,
+                'params' => $params,
                 'type' => $type,
             ]];
         }
@@ -147,7 +157,7 @@ class Composite implements ExpressionInterface
                 $ret[] = [
                     'expr' => $value,
                     'type' => $type,
-                    'binds' => [],
+                    'params' => [],
                 ];
 
                 continue;
@@ -167,7 +177,7 @@ class Composite implements ExpressionInterface
 
             $ret[] = [
                 'expr' => $value->getExpr($column),
-                'binds' => $value->getBinds(),
+                'params' => $value->getBinds(),
                 'type' => $type,
             ];
         }
