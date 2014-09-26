@@ -220,6 +220,7 @@ function null()
 
 /**
  * @ignore
+ * @internal
  */
 function columnize($column, $source)
 {
@@ -227,5 +228,18 @@ function columnize($column, $source)
         return $source. '.' . $column;
     } else {
         return $column;
+    }
+}
+
+/**
+ * @ignore
+ * @internal
+ */
+function alias($source, $alias)
+{
+    if (is_string($alias) && $alias) {
+        return sprintf("%s AS %s", $source, $alias);
+    } else {
+        return sprintf("%s", $source);
     }
 }

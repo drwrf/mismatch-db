@@ -160,8 +160,10 @@ use DomainException;
  */
 class Query implements IteratorAggregate
 {
+    use Query\From;
     use Query\Where;
     use Query\Having;
+    use Query\Limit;
 
     /**
      * @var  Connection  The connection to make requests against.
@@ -439,24 +441,6 @@ class Query implements IteratorAggregate
     }
 
     /**
-     * Sets the table or tables to select data from.
-     *
-     * By default, the first table that is passed here will be used
-     * as the "main" table, which means that we'll assume unadorned
-     * columns will be selected from this table.
-     *
-     * @param   mixed  $table
-     * @return  self
-     * @api
-     */
-    public function from($table)
-    {
-        $this->addPart('from', (array) $table);
-
-        return $this;
-    }
-
-    /**
      * Adds a single JOIN statement to the query.
      *
      * If $join is an attribute that exists on the model, then
@@ -480,31 +464,6 @@ class Query implements IteratorAggregate
         return $this->addPart('join', [
             $table => $conds,
         ]);
-    }
-    /**
-     * Determines the offset of results.
-     *
-     * @param  int  $offset
-     * @return self
-     * @api
-     */
-    public function offset($offset)
-    {
-        return $this->setPart('offset', $offset);
-    }
-
-    /**
-     * Determines how many results to return.
-     *
-     * Passing one will give you a single model back.
-     *
-     * @param  int  $limit
-     * @return self
-     * @api
-     */
-    public function limit($limit)
-    {
-        return $this->setPart('limit', $limit);
     }
 
     /**
@@ -571,7 +530,7 @@ class Query implements IteratorAggregate
         }
 
         $query[] = 'SELECT ' . $this->compileList('select');
-        $query[] = 'FROM ' . $this->compileList('from');
+        $query[] = 'FROM ' . $this->compileFrom();
         $params = [];
 
         if ($join = $this->compileJoin()) {
@@ -612,7 +571,7 @@ class Query implements IteratorAggregate
     private function toUpdate($data)
     {
         $update = $this->compileUpdate($data);
-        $query[] = 'UPDATE ' . $this->compileList('from', false);
+        $query[] = 'UPDATE ' . $this->compileFrom(false);
         $query[] = 'SET ' . $update[0];
         $params = $update[1];
 
@@ -636,7 +595,7 @@ class Query implements IteratorAggregate
     private function toInsert($data)
     {
         $insert = $this->compileInsert($data);
-        $query[] = 'INSERT INTO ' . $this->compileList('from', false);
+        $query[] = 'INSERT INTO ' . $this->compileFrom(false);
         $query[] = $insert[0];
         $params = $insert[1];
 
@@ -652,7 +611,7 @@ class Query implements IteratorAggregate
      */
     private function toDelete()
     {
-        $query[] = 'DELETE FROM ' . $this->compileList('from', false);
+        $query[] = 'DELETE FROM ' . $this->compileFrom(false);
         $params = [];
 
         if ($join = $this->compileJoin()) {
@@ -827,11 +786,6 @@ class Query implements IteratorAggregate
                     $parts[] = $this->alias($source, $alias);
                     break;
 
-                // Turn FROMs into table AS alias
-                case 'from':
-                    $parts[] = $aliasFrom ? $this->alias($source, $alias) : $source;
-                    break;
-
                 // Turn ORDER BYs into table.column ASC/DESC
                 case 'order':
                     $parts[] = Expr\columnize($source, $this->alias) . ' ' . strtoupper($alias);
@@ -885,25 +839,6 @@ class Query implements IteratorAggregate
         $query = sprintf('(%s) VALUES (%s)', $columns, $values);
 
         return [$query, $binds];
-    }
-
-    /**
-     * Adds the LIMIT and OFFSET parts to a query.
-     *
-     * @param  string  $query
-     */
-    private function compileLimit($query)
-    {
-        $limit = $this->getPart('limit');
-        $offset = $this->getPart('offset');
-
-        if ($limit || $offset) {
-            return $this->conn
-                ->getDatabasePlatform()
-                ->modifyLimitQuery($query, $limit, $offset);
-        }
-
-        return $query;
     }
 
     /**
