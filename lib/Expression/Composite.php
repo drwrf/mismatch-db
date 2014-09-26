@@ -97,7 +97,7 @@ class Composite implements ExpressionInterface
     /**
      * Compiles the expression into a string and a set of params.
      *
-     * @return [$expr, $params]
+     * @return array
      */
     private function compile()
     {
