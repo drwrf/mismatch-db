@@ -578,20 +578,6 @@ class Query implements IteratorAggregate
         return [$query, $params];
     }
 
-
-    /**
-     * @param   string  $type
-     * @return  Mismatch\Composite
-     */
-    private function getComposite($type)
-    {
-        if (!$this->hasPart($type)) {
-            $this->setPart($type, (new Expr\Composite())->setAlias($this->alias));
-        }
-
-        return $this->getPart($type);
-    }
-
     /**
      * Sets a part with a brand new value.
      *
