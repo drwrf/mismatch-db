@@ -160,6 +160,8 @@ use DomainException;
  */
 class Query implements IteratorAggregate
 {
+    use Query\Where;
+
     /**
      * @var  Connection  The connection to make requests against.
      */
@@ -480,44 +482,6 @@ class Query implements IteratorAggregate
     }
 
     /**
-     * Adds a set of AND filters to a query chain.
-     *
-     * @param  mixed  $conds
-     * @param  array  $binds
-     * @return self
-     * @api
-     */
-    public function where($conds, array $binds = [])
-    {
-        if (is_int($conds)) {
-            $conds = [$this->pk => $conds];
-        }
-
-        $this->getComposite('where')->all($conds, $binds);
-
-        return $this;
-    }
-
-    /**
-     * Adds a set of OR filters to a query chain.
-     *
-     * @param  mixed  $conds
-     * @param  array  $binds
-     * @return self
-     * @api
-     */
-    public function whereAny($conds, array $binds = [])
-    {
-        if (is_int($conds)) {
-            $conds = [$this->pk => $conds];
-        }
-
-        $this->getComposite('where')->any($conds, $binds);
-
-        return $this;
-    }
-
-    /**
      * Adds a set of AND HAVING filters to a query chain.
      *
      * @param  mixed  $conds
@@ -645,8 +609,8 @@ class Query implements IteratorAggregate
             $params = array_merge($params, $join[1]);
         }
 
-        if ($expr = $this->compileExpression('where')) {
-            $query[] = sprintf('WHERE %s', $expr[0]);
+        if ($expr = $this->compileWhere()) {
+            $query[] = $expr[0];
             $params = array_merge($params, $expr[1]);
         }
 
@@ -682,8 +646,8 @@ class Query implements IteratorAggregate
         $query[] = 'SET ' . $update[0];
         $params = $update[1];
 
-        if ($expr = $this->compileExpression('where')) {
-            $query[] = sprintf('WHERE %s', $expr[0]);
+        if ($expr = $this->compileWhere()) {
+            $query[] = $expr[0];
             $params = array_merge($params, $expr[1]);
         }
 
@@ -726,8 +690,8 @@ class Query implements IteratorAggregate
             $params = array_merge($params, $join[1]);
         }
 
-        if ($expr = $this->compileExpression('where')) {
-            $query[] = sprintf('WHERE %s', $expr[0]);
+        if ($expr = $this->compileWhere()) {
+            $query[] = $expr[0];
             $params = array_merge($params, $expr[1]);
         }
 
