@@ -1,9 +1,18 @@
 <?php
 
+/**
+ * This file is part of Mismatch.
+ *
+ * @author   ♥ <hi@drwrf.com>
+ * @license  MIT
+ */
 namespace Mismatch\DB\Query;
 
 use Mismatch\DB\Expression\Composite;
 
+/**
+ * Adds WHERE functionality to a query builder.
+ */
 trait Where
 {
     /**
