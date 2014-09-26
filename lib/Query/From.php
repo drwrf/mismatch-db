@@ -54,7 +54,7 @@ trait From
         foreach ($this->from as $source => $alias) {
             // Allow no aliasing as well, as denoted by an it key
             if (!is_int($source)) {
-                $parts[] = $useAlias ? $this->alias($source, $alias) : $source;
+                $parts[] = $useAlias ? e\alias($source, $alias) : $source;
             } else {
                 $parts[] = $alias;
             }

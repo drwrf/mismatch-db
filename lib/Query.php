@@ -783,7 +783,7 @@ class Query implements IteratorAggregate
                 // Turn SELECTs into table.column AS alias
                 case 'select':
                     $source = Expr\columnize($source, $this->alias);
-                    $parts[] = $this->alias($source, $alias);
+                    $parts[] = Expr\alias($source, $alias);
                     break;
 
                 // Turn ORDER BYs into table.column ASC/DESC
@@ -839,21 +839,5 @@ class Query implements IteratorAggregate
         $query = sprintf('(%s) VALUES (%s)', $columns, $values);
 
         return [$query, $binds];
-    }
-
-    /**
-     * Creates an alias for a column or table if the alias is provided.
-     *
-     * @param   string  $source
-     * @param   string  $alias
-     * @return  string
-     */
-    private function alias($source, $alias)
-    {
-        if (is_string($alias) && $alias) {
-            return sprintf("%s AS %s", $source, $alias);
-        } else {
-            return sprintf("%s", $source);
-        }
     }
 }
