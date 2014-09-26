@@ -165,6 +165,7 @@ class Query implements IteratorAggregate
     use Query\Where;
     use Query\Having;
     use Query\Order;
+    use Query\Group;
     use Query\Limit;
 
     /**
@@ -443,18 +444,6 @@ class Query implements IteratorAggregate
     }
 
     /**
-     * Determines the columns to group by.
-     *
-     * @param  array  $columns
-     * @return self
-     * @api
-     */
-    public function group(array $columns)
-    {
-        return $this->addPart('group', $columns);
-    }
-
-    /**
      * Implementation of IteratorAggregate
      *
      * @return  Iterator
@@ -502,8 +491,8 @@ class Query implements IteratorAggregate
             $params = array_merge($params, $expr[1]);
         }
 
-        if ($group = $this->compileList('group')) {
-            $query[] = 'GROUP BY ' . $group;
+        if ($group = $this->compileGroup()) {
+            $query[] = $group;
         }
 
         if ($expr = $this->compileHaving()) {
@@ -684,16 +673,6 @@ class Query implements IteratorAggregate
                 case 'select':
                     $source = Expr\columnize($source, $this->alias);
                     $parts[] = Expr\alias($source, $alias);
-                    break;
-
-                // Turn ORDER BYs into table.column ASC/DESC
-                case 'order':
-                    $parts[] = Expr\columnize($source, $this->alias) . ' ' . strtoupper($alias);
-                    break;
-
-                // Turn GROUP BYs into table.column
-                case 'group':
-                    $parts[] = Expr\columnize($source, $this->alias);
                     break;
             }
         }
