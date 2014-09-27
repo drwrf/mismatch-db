@@ -271,21 +271,6 @@ class Query implements IteratorAggregate
     }
 
     /**
-     * Finds and returns a list of records limited by the
-     * amount passed.
-     *
-     * @param   mixed  $limit
-     * @return  Collection
-     * @api
-     */
-    public function take($limit)
-    {
-        $this->limit($limit);
-
-        return $this->all();
-    }
-
-    /**
      * Finds and returns all of the records.
      *
      * @param   mixed  $query
