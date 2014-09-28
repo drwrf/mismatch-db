@@ -8,7 +8,7 @@
  */
 namespace Mismatch\DB;
 
-use Mismatch\DB\Expression as Expr;
+use Mismatch\DB\Expression as e;
 use Mismatch\DB\Collection;
 use IteratorAggregate;
 use Countable;
@@ -91,9 +91,6 @@ use DomainException;
  *
  * // Return the number of records that would be returned by all().
  * $query->count();
- *
- * // Return a number of authors, not exceeding the passed limit of 10.
- * $query->take(10);
  * ```
  *
  * There are also methods for modifying records.
@@ -174,19 +171,14 @@ class Query implements IteratorAggregate
     private $conn;
 
     /**
-     * @var  string  The alias to use for unadorned columns
-     */
-    private $alias;
-
-    /**
      * @var  string  The primary key to use for id shortcuts.
      */
     private $pk;
 
     /**
-     * @var  array  Private parts, heh.
+     * @var  array  The columns to select.
      */
-    private $parts = [];
+    private $select = [];
 
     /**
      * Constructor.
@@ -195,17 +187,14 @@ class Query implements IteratorAggregate
      * @param   string|array  $table
      * @param   string        $pk
      */
-    public function __construct($conn, $table, $pk = 'id')
+    public function __construct($conn, $table = null, $pk = 'id')
     {
         $this->conn = $conn;
         $this->pk = $pk;
 
-        // Set an alias that we can use for turning columns like "foo"
-        // into something more specific like "alias.foo".
-        $this->alias = is_array($table) ? current($table) : $table;
-
-        // And set a default from based on the constructor.
-        $this->from($table);
+        if ($table) {
+            $this->from($table);
+        }
     }
 
     /**
@@ -226,6 +215,25 @@ class Query implements IteratorAggregate
     public function __clone()
     {
         // Nothing to do, just take it all!
+    }
+
+    /**
+     * Chooses the columns to select in the result.
+     *
+     * ```php
+     * // Aliases are supported as array keys
+     * $query->columns(['column', 'column' => 'alias']);
+     * ```
+     *
+     * @param   array  $columns
+     * @return  self
+     * @api
+     */
+    public function select(array $columns)
+    {
+        $this->select = array_merge($this->select, $columns);
+
+        return $this;
     }
 
     /**
@@ -254,7 +262,7 @@ class Query implements IteratorAggregate
     /**
      * Attempts to find a single record.
      *
-     * If no record is returned, then null is returned.
+     * If no record is found, then null is returned.
      *
      * @param   mixed  $query
      * @param   mixed  $conds
@@ -286,7 +294,18 @@ class Query implements IteratorAggregate
 
         list($query, $params) = $this->toSelect();
 
-        return $this->select($query, $params);
+        return $this->raw($query, $params);
+    }
+
+    /**
+     * Implementation of IteratorAggregate
+     *
+     * @return  Iterator
+     * @api
+     */
+    public function getIterator()
+    {
+        return $this->all();
     }
 
     /**
@@ -313,29 +332,21 @@ class Query implements IteratorAggregate
     {
         list($query, $params) = $this->toInsert($data);
 
-        $this->select($query, $params);
-
-        return $this->modify($query, $params);
+        return $this->raw($query, $params);
     }
 
     /**
      * Executes an update, returning the number of rows affected.
      *
      * @param   array  $data
-     * @param   mixed  $query
-     * @param   mixed  $conds
      * @return  int
      * @api
      */
-    public function update(array $data, $query = null, $conds = [])
+    public function update(array $data)
     {
-        if ($query) {
-            $this->where($query, $conds);
-        }
-
         list($query, $params) = $this->toUpdate($data);
 
-        return $this->modify($query, $params);
+        return $this->raw($query, $params);
     }
 
     /**
@@ -354,89 +365,30 @@ class Query implements IteratorAggregate
 
         list($query, $params) = $this->toDelete();
 
-        return $this->modify($query, $params);
+        return $this->raw($query, $params);
     }
 
     /**
-     * Executes a raw select query.
+     * Executes a raw query.
      *
      * @param   string  $query
      * @param   array   $params
      * @return  Collection
      * @api
      */
-    public function select($query, array $params = [])
+    public function raw($query, array $params = [])
     {
         $stmt = $this->conn->executeQuery($query, $params);
+
+        // No columns? That was a INSERT, UPDATE, or DELETE, so
+        // just return the number of affected rows.
+        if ($stmt->columnCount() === 0) {
+            return $stmt->rowCount();
+        }
 
         // Wrap the statement in our own result type, so we have more
         // control over the interface that it exposes.
         return $this->prepareStatement($stmt);
-    }
-
-    /**
-     * Executes a raw modification query.
-     *
-     * @param   string  $query
-     * @param   array   $params
-     * @return  Collection
-     * @api
-     */
-    public function modify($query, array $params = [])
-    {
-        return $this->conn->executeUpdate($query, $params);
-    }
-
-    /**
-     * Executes the passed callback inside of a transaction.
-     *
-     * @param   Closure  $fn
-     * @return  self
-     * @api
-     */
-    public function transactional(Closure $fn)
-    {
-        $this->conn->transactional($fn);
-
-        return $this;
-    }
-
-    /**
-     * Returns the last insert id.
-     *
-     * @return  int|string
-     */
-    public function lastInsertId()
-    {
-        $this->conn->lastInsertId();
-    }
-
-    /**
-     * Chooses the columns to select in the result.
-     *
-     * ```php
-     * // Aliases are supported as array keys
-     * $query->columns(['column', 'column' => 'alias']);
-     * ```
-     *
-     * @param   array  $columns
-     * @return  self
-     * @api
-     */
-    public function columns(array $columns)
-    {
-        return $this->addPart('select', $columns);
-    }
-
-    /**
-     * Implementation of IteratorAggregate
-     *
-     * @return  Iterator
-     * @api
-     */
-    public function getIterator()
-    {
-        return $this->all();
     }
 
     /**
@@ -458,11 +410,7 @@ class Query implements IteratorAggregate
      */
     private function toSelect()
     {
-        if (!$this->hasPart('select')) {
-            $this->setPart('select', ['*']);
-        }
-
-        $query[] = 'SELECT ' . $this->compileList('select');
+        $query[] = 'SELECT ' . $this->compileColumns();
         $query[] = 'FROM ' . $this->compileFrom();
         $params = [];
 
@@ -557,6 +505,10 @@ class Query implements IteratorAggregate
             $params = array_merge($params, $expr[1]);
         }
 
+        if ($order = $this->compileOrder()) {
+            $query[] = $order;
+        }
+
         $query = implode(array_filter($query), ' ');
         $query = $this->compileLimit($query);
 
@@ -564,87 +516,25 @@ class Query implements IteratorAggregate
     }
 
     /**
-     * Sets a part with a brand new value.
+     * Compiles the columns to select in a SELECT.
      *
-     * @param   string  $name
-     * @param   mixed   $value
-     * @return  $this
+     * @return  string
      */
-    private function setPart($name, $value)
+    private function compileColumns()
     {
-        $this->parts[$name] = $value;
-
-        return $this;
-    }
-
-    /**
-     * Adds to a part as if it were an array.
-     *
-     * @param   string  $name
-     * @param   array   $value
-     * @return  $this
-     */
-    private function addPart($name, array $value)
-    {
-        $this->parts[$name] = array_merge($this->getPart($name, []), $value);
-
-        return $this;
-    }
-
-    /**
-     * Returns a part, using the default if it doesn't exist.
-     *
-     * @param   string  $name
-     * @param   mixed   $default
-     * @return  mixed
-     */
-    private function getPart($name, $default = null)
-    {
-        if (!$this->hasPart($name)) {
-            $this->setPart($name, $default);
-        }
-
-        return $this->parts[$name];
-    }
-
-    /**
-     * Returns whether or not the query has a particular part.
-     *
-     * @param   string  $name
-     * @return  bool
-     */
-    private function hasPart($name)
-    {
-        return isset($this->parts[$name]);
-    }
-
-    /**
-     * Prepares a list-based clause of a SQL query.
-     *
-     * @param  array  $query
-     * @param  bool   $alias
-     */
-    private function compileList($type, $aliasFrom = true)
-    {
-        if (!$this->hasPart($type)) {
-            return;
+        if (!$this->select) {
+            $this->select = ['*'];
         }
 
         $parts = [];
 
-        foreach ($this->getPart($type, []) as $source => $alias) {
+        foreach ($this->select as $column => $alias) {
             // Allow no aliasing as well, as denoted by an it key
-            if (is_int($source)) {
-                $source = $alias;
-                $alias = null;
-            }
-
-            switch ($type) {
-                // Turn SELECTs into table.column AS alias
-                case 'select':
-                    $source = Expr\columnize($source, $this->alias);
-                    $parts[] = Expr\alias($source, $alias);
-                    break;
+            if (is_int($column)) {
+                $parts[] = e\columnize($alias, $this->alias);
+            } else {
+                $column = e\columnize($column, $this->alias);
+                $parts[] = e\alias($column, $alias);
             }
         }
 

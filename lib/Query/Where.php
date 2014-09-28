@@ -30,7 +30,7 @@ trait Where
      */
     public function where($conds, array $binds = [])
     {
-        if (is_int($conds) || (is_array($conds) && is_int(key($conds)))) {
+        if ($this->isPk($conds)) {
             $conds = [$this->pk => $conds];
         }
 
@@ -49,7 +49,7 @@ trait Where
      */
     public function whereAny($conds, array $binds = [])
     {
-        if (is_int($conds)) {
+        if ($this->isPk($conds)) {
             $conds = [$this->pk => $conds];
         }
 
@@ -83,5 +83,14 @@ trait Where
         $params = $this->where->getBinds();
 
         return [sprintf('WHERE %s', $expr), $params];
+    }
+
+    /**
+     * @param   mixed  $conds
+     * @return  bool
+     */
+    private function isPk($conds)
+    {
+        return is_int($conds) || (is_array($conds) && is_int(key($conds)));
     }
 }

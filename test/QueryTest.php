@@ -19,24 +19,24 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject = new Query($this->conn, $this->table, $this->pk);
     }
 
-    public function test_select()
+    public function test_raw_select()
     {
         $this->assertQuery(
             'SELECT author.* FROM authors AS author WHERE author.name = ?',
             ['test']);
 
-        $this->subject->select(
+        $this->subject->raw(
             'SELECT author.* FROM authors AS author WHERE author.name = ?',
             ['test']);
     }
 
-    public function test_modify()
+    public function test_raw_modification()
     {
         $this->assertQuery(
             'DELETE FROM authors AS author WHERE author.name = ?',
             ['test']);
 
-        $this->subject->select(
+        $this->subject->raw(
             'DELETE FROM authors AS author WHERE author.name = ?',
             ['test']);
     }
@@ -51,7 +51,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
     public function test_aggregateAll()
     {
-        $this->subject->columns(['COUNT(*)' => 'count']);
+        $this->subject->select(['COUNT(*)' => 'count']);
 
         $this->assertQuery(
             'SELECT COUNT(*) AS count FROM authors AS author', []);
@@ -247,7 +247,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
             'UPDATE authors SET role_id = ? WHERE author.id = ?',
             [1, 2]);
 
-        $this->subject->update(['role_id' => 1], 2);
+        $this->subject->where(2)->update(['role_id' => 1]);
     }
 
     public function test_insert()
@@ -329,6 +329,8 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     public function assertQuery($sql, $params, $result = [])
     {
         $stmt = Mockery::mock('Doctrine\DBAL\Driver\Statement');
+        $stmt->shouldReceive('columnCount')
+            ->andReturn(5);
         $stmt->shouldReceive('rowCount')
             ->andReturn(1);
         $stmt->shouldReceive('fetch')

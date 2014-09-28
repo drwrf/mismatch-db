@@ -22,6 +22,11 @@ trait From
     private $from = [];
 
     /**
+     * @var  array  The tables to interact with.
+     */
+    private $alias;
+
+    /**
      * Sets the table or tables to select data from.
      *
      * @param   mixed  $table
@@ -31,6 +36,12 @@ trait From
     public function from($table)
     {
         $this->from = array_merge($this->from, (array) $table);
+
+        // Set an alias that we can use for turning columns like "foo"
+        // into something more specific like "alias.foo".
+        if (!$this->alias) {
+            $this->alias = is_array($table) ? current($table) : $table;
+        }
 
         return $this;
     }
