@@ -25,9 +25,11 @@ class Not extends Expression
      */
     public function __construct($child)
     {
-        if (!($child instanceof Expression)) {
+        if (!($child instanceof ExpressionInterface)) {
             $child = is_array($child) ? e\in($child) : e\eq($child);
         }
+
+        $this->child = $child;
 
         parent::__construct('NOT (%s)', $child->getBinds());
     }
