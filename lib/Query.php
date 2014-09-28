@@ -379,7 +379,7 @@ class Query implements IteratorAggregate, Countable
      * @return  int
      * @api
      */
-    public function insert(array $data)
+    public function insert($data)
     {
         list($query, $params) = $this->toInsert($data);
 
@@ -393,7 +393,7 @@ class Query implements IteratorAggregate, Countable
      * @return  int
      * @api
      */
-    public function update(array $data)
+    public function update($data)
     {
         list($query, $params) = $this->toUpdate($data);
 
