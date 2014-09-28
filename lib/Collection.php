@@ -70,7 +70,7 @@ class Collection implements Iterator, Countable
      *  - A valid class name, in which case the result will be passed
      *    to the class' constructor, and the instance will be returned.
      *
-     * @param   string  $strategy
+     * @param   string|callable  $strategy
      * @return  $this
      */
     public function fetchAs($strategy)

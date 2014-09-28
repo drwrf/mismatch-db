@@ -225,6 +225,13 @@ class Query implements IteratorAggregate, Countable
     private $select = [];
 
     /**
+     * The strategy to use when returning individual results.
+     *
+     * @var  string
+     */
+    private $strategy;
+
+    /**
      * Constructor.
      *
      * @param   Connection    $conn
@@ -436,6 +443,21 @@ class Query implements IteratorAggregate, Countable
     }
 
     /**
+     * Sets the strategy to use for returning results from a SELECT.
+     *
+     * @see Collection::fetchAs() The possible values of $strategy.
+     *
+     * @param  string  $strategy
+     * @return self
+     */
+    public function fetchAs($strategy)
+    {
+        $this->strategy = $strategy;
+
+        return $this;
+    }
+
+    /**
      * Hook to allow preparation of a SQL result just before
      * it's returned to the caller.
      *
@@ -444,7 +466,13 @@ class Query implements IteratorAggregate, Countable
      */
     protected function prepareStatement($stmt)
     {
-        return new Collection($stmt);
+        $collection = new Collection($stmt);
+
+        if ($this->strategy) {
+            $collection->fetchAs($this->strategy);
+        }
+
+        return $collection;
     }
 
     /**
