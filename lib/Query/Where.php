@@ -8,6 +8,7 @@
  */
 namespace Mismatch\DB\Query;
 
+use Mismatch\DB\Expression as e;
 use Mismatch\DB\Expression\Composite;
 
 /**
@@ -59,12 +60,50 @@ trait Where
     }
 
     /**
+     * Adds a set of AND NOT filters to a query chain.
+     *
+     * @param  mixed  $conds
+     * @param  array  $binds
+     * @return self
+     * @api
+     */
+    public function exclude($conds, array $binds = [])
+    {
+        if ($this->isPk($conds)) {
+            $conds = [$this->pk => $conds];
+        }
+
+        $this->getWhere()->all(e\not(e\all($conds, $binds)));
+
+        return $this;
+    }
+
+    /**
+     * Adds a set of OR NOT filters to a query chain.
+     *
+     * @param  mixed  $conds
+     * @param  array  $binds
+     * @return self
+     * @api
+     */
+    public function excludeAny($conds, array $binds = [])
+    {
+        if ($this->isPk($conds)) {
+            $conds = [$this->pk => $conds];
+        }
+
+        $this->getWhere()->all(e\not(e\any($conds, $binds)));
+
+        return $this;
+    }
+
+    /**
      * @return Composite
      */
     private function getWhere()
     {
         if (!$this->where) {
-            $this->where = (new Composite())->setAlias($this->alias);
+            $this->where = new Composite();
         }
 
         return $this->where;
@@ -79,7 +118,7 @@ trait Where
             return null;
         }
 
-        $expr = $this->where->getExpr();
+        $expr = $this->where->getExpr($this->alias);
         $params = $this->where->getBinds();
 
         return [sprintf('WHERE %s', $expr), $params];

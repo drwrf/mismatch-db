@@ -110,8 +110,42 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject->where('name = ?', ['test']);
 
         $this->assertQuery(
-            'SELECT author.* FROM authors AS author '.
+            'SELECT author.* FROM authors AS author ' .
             'WHERE name = ?', ['test']);
+
+        $this->subject->all();
+    }
+
+    public function test_exclude_withArray()
+    {
+        $this->subject->exclude(['name' => 'test']);
+
+        $this->assertQuery(
+            'SELECT author.* FROM authors AS author ' .
+            'WHERE NOT (author.name = ?)', ['test']);
+
+        $this->subject->all();
+    }
+
+    public function test_excludeAny_withArrayMultiple()
+    {
+        $this->subject->excludeAny(['name' => 'test', 'id' => 1]);
+
+        $this->assertQuery(
+            'SELECT author.* FROM authors AS author ' .
+            'WHERE NOT (author.name = ? OR author.id = ?)',
+            ['test', 1]);
+
+        $this->subject->all();
+    }
+
+    public function test_exclude_withString()
+    {
+        $this->subject->exclude('name = ?', ['test']);
+
+        $this->assertQuery(
+            'SELECT author.* FROM authors AS author ' .
+            'WHERE NOT (name = ?)', ['test']);
 
         $this->subject->all();
     }
@@ -121,7 +155,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
         $this->subject->having(['COUNT(bonus)' => 1000]);
 
         $this->assertQuery(
-            'SELECT author.* FROM authors AS author '.
+            'SELECT author.* FROM authors AS author ' .
             'HAVING COUNT(bonus) = ?', [1000]);
 
         $this->subject->all();

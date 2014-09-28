@@ -54,12 +54,16 @@ use DomainException;
  * $query->where(['email' => 'rl.stine@example.com']);
  * $query->whereAny(['email' => 'ka.applegate@example.com']);
  *
+ * // Similarly, you can negate WHERE with exclude and excludeAny
+ * $query->exclude(['email' => 'rl.stine@example.com']);
+ * $query->excludeAny(['email' => 'ka.applegate@example.com']);
+ *
  * // Both having and havingAny work exactly as where and whereAny.
  * $query->having(['sum' => e\gt(5)]);
  * $query->havingAny(['max' => e\lt(10)]);
  *
  * // Select specific columns. Aliases are supported as array keys
- * $query->columns(['column', 'column' => 'alias']);
+ * $query->select(['column', 'column' => 'alias']);
  *
  * // INNER JOIN is added by default.
  * $query->join('authors a', ['a.id' => 'book.author_id']);
@@ -109,8 +113,7 @@ use DomainException;
  * As well as facilities for executing raw SQL.
  *
  * ```php
- * $query->select('SELECT * FROM books WHERE email = ?', ['foo@example.com']);
- * $query->modify('DELETE FROM books WHERE email = ?', ['foo@example.com']);
+ * $query->raw('SELECT * FROM books WHERE email = ?', ['foo@example.com']);
  * ```
  *
  *

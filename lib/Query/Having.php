@@ -56,7 +56,7 @@ trait Having
     private function getHaving()
     {
         if (!$this->having) {
-            $this->having = (new Composite())->setAlias($this->alias);
+            $this->having = new Composite();
         }
 
         return $this->having;
@@ -71,7 +71,7 @@ trait Having
             return null;
         }
 
-        $expr = $this->having->getExpr();
+        $expr = $this->having->getExpr($this->alias);
         $params = $this->having->getBinds();
 
         return [sprintf('HAVING %s', $expr), $params];

@@ -13,19 +13,9 @@ use Mismatch\DB\Expression as e;
 class Composite implements ExpressionInterface
 {
     /**
-     * @var  string
-     */
-    private $alias;
-
-    /**
      * @var  array
      */
     private $expr = [];
-
-    /**
-     * @var  bool
-     */
-    private $compiled = false;
 
     /**
      * @return  string
@@ -66,9 +56,9 @@ class Composite implements ExpressionInterface
     /**
      * {@inheritDoc}
      */
-    public function getExpr($column = null)
+    public function getExpr($alias = null)
     {
-        return $this->compile()['expr'];
+        return $this->compile($alias)['expr'];
     }
 
     /**
@@ -80,38 +70,20 @@ class Composite implements ExpressionInterface
     }
 
     /**
-     * Allows setting a table alias to use for all columns passed
-     * to hash-based expressions.
-     *
-     * @param  string  $alias
-     * @return $this
-     */
-    public function setAlias($alias)
-    {
-        $this->alias = $alias;
-        $this->compiled = false;
-
-        return $this;
-    }
-
-    /**
      * Compiles the expression into a string and a set of params.
      *
      * @return array
      */
-    private function compile()
+    private function compile($alias = null)
     {
-        if ($this->compiled) {
-            return $this->compiled;
-        }
-
         $expr = '';
         $params = [];
 
         foreach ($this->expr as $parts) {
             // We store the arguments passed to any and all in an array
             // and only unpack them when compiling, so now's the time.
-            $parts = $this->compilePart($parts[0], $parts[1], $parts[2]);
+            $parts = $this->compilePart(
+                $alias, $parts[0], $parts[1], $parts[2]);
 
             foreach ($parts as $part) {
                 // Only start adding the operands if we've started adding
@@ -125,18 +97,16 @@ class Composite implements ExpressionInterface
             }
         }
 
-        $this->compiled = [
+        return [
             'expr' => $expr,
             'params' => $params,
         ];
-
-        return $this->compiled;
     }
 
     /**
      * @return  array
      */
-    private function compilePart($type, $expr, array $params)
+    private function compilePart($alias, $type, $expr, array $params)
     {
         $ret = [];
 
@@ -146,6 +116,15 @@ class Composite implements ExpressionInterface
             return [[
                 'expr' => $expr,
                 'params' => $params,
+                'type' => $type,
+            ]];
+        }
+
+        // Allow passing completely bare expressions.
+        if ($expr instanceof ExpressionInterface) {
+            return [[
+                'expr' => $expr->getExpr($alias),
+                'params' => $expr->getBinds(),
                 'type' => $type,
             ]];
         }
@@ -164,14 +143,14 @@ class Composite implements ExpressionInterface
             }
 
             // Try and provide a table alias if possible.
-            $column = e\columnize($column, $this->alias);
+            $column = e\columnize($column, $alias);
 
             // And automatically detect an IN if possible.
             if (is_array($value)) {
                 $value = e\in($value);
             }
 
-            if (!($value instanceof Expression)) {
+            if (!($value instanceof ExpressionInterface)) {
                 $value = e\eq($value);
             }
 

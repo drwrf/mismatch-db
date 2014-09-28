@@ -31,7 +31,7 @@ class Not extends Expression
 
         $this->child = $child;
 
-        parent::__construct('NOT (%s)', $child->getBinds());
+        parent::__construct('NOT (%s)', $this->child->getBinds());
     }
 
     /**
