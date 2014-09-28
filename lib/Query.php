@@ -42,46 +42,11 @@ use DomainException;
  * }
  * ```
  *
- * ## Building queries
+ * ## Retrieving data
  *
- * After creating a new instance of your query class, you can start
- * chaining methods on to it to refine and filter results before they're
- * returned.
- *
- * ```php
- * // Both where and whereAny support complex expressions (outlined in
- * // the section below. Also, where is AND while whereAny is OR.
- * $query->where(['email' => 'rl.stine@example.com']);
- * $query->whereAny(['email' => 'ka.applegate@example.com']);
- *
- * // Similarly, you can negate WHERE with exclude and excludeAny
- * $query->exclude(['email' => 'rl.stine@example.com']);
- * $query->excludeAny(['email' => 'ka.applegate@example.com']);
- *
- * // Both having and havingAny work exactly as where and whereAny.
- * $query->having(['sum' => e\gt(5)]);
- * $query->havingAny(['max' => e\lt(10)]);
- *
- * // Select specific columns. Aliases are supported as array keys
- * $query->select(['column', 'column' => 'alias']);
- *
- * // INNER JOIN is added by default.
- * $query->join('authors a', ['a.id' => 'book.author_id']);
- *
- * // Although different types of joins can be specified.
- * $query->join('LEFT OUTER JOIN authors a', ['a.id' => 'book.author_id']);
- *
- * // The following work exactly as you'd expect.
- * $query->offset(10);
- * $query->limit(10);
- * $query->order(['name' => 'asc']);
- * $query->group(['max']);
- * ```
- *
- * ## Executing queries
- *
- * Once you've built up your query, you can execute it. There are all kinds
- * of methods available for SELECT-based queries.
+ * For most applications, the majority of your queries will be used to
+ * retrieve data from your database. As such, `Mismatch\DB` has quite
+ * a few methods available to retrieve data.
  *
  * ```php
  * // Return a single author, or throw an exception.
@@ -97,6 +62,123 @@ use DomainException;
  * $query->count();
  * ```
  *
+ * ## Conditions
+ *
+ * `Mismatch\DB` provides a few methods to add `WHERE` clauses to your
+ * queries, so as to limit the number of records returned. These methods
+ * can take a plethora of arguments, based on your use-case.
+ *
+ * ```php
+ * // Adds "WHERE id = 1" to your query.
+ * $query->where(1);
+ *
+ * // Adds "WHERE id IN (1, 2)" to your query.
+ * $query->where([1, 2]);
+ *
+ * // Adds "WHERE email = 'rl.stine@example.com'" to your query.
+ * $query->where(['email' => 'rl.stine@example.com']);
+ *
+ * // Adds "WHERE id IN (1, 2)" to your query.
+ * $query->where(['id' => [1, 2]]);
+ *
+ * // Adds "WHERE email LIKE '%example.com'".
+ * $query->where('email LIKE ?', ['%example.com']);
+ * ```
+ *
+ * More complex expressions are also available using the API provided
+ * by `Mismatch\DB\Expression`. The following expressions are available:
+ *
+ * ```php
+ * use Mismatch\DB\Expression as e;
+ *
+ * // > and >=
+ * $query->where(['logins' => e\gt(10)]);
+ * $query->where(['logins' => e\gte(10)]);
+ *
+ * // < and <=
+ * $query->where(['logins' => e\lt(10)]);
+ * $query->where(['logins' => e\lte(10)]);
+ *
+ * // Date comparisons make more semantic sense with "before" and "after".
+ * $query->where(['signup_date' => e\before('2014-01-01')]);
+ * $query->where(['signup_date' => e\after('2014-01-01')]);
+ *
+ * // BETWEEN
+ * $query->where(['signup_date' => e\between('2014-01-01', '2015-01-01')]);
+ *
+ * // LIKE
+ * $query->where(['email' => e\like('%example.com')]);
+ *
+ * // IS NULL and blank (falsey or null)
+ * $query->where(['email' => e\null()]);
+ * $query->where(['email' => e\blank()]);
+ *
+ * // Less than and less than or equal to.
+ * $query->where(['logins' => e\lt(10)]);
+ * $query->where(['logins' => e\lte(10)]);
+ *
+ * // Negate using "not".
+ * $query->where(['logins' => e\not(e\gt(10))]);
+ * ```
+ *
+ * There are also a few methods other than `where` that can aid in
+ * building complex conditions. All of these methods are chainable,
+ * so you can easily build up compound conditions.
+ *
+ * ```php
+ * // Joins conditions with AND
+ * $query->where();
+ *
+ * // Joins conditions with OR
+ * $query->whereAny();
+ *
+ * // Joins conditions with AND NOT
+ * $query->exclude();
+ *
+ * // Joins conditions with OR NOT
+ * $query->excludeAny();
+ * ```
+ *
+ * As a final note, all of the finder methods—`find`, `first`, `all`, and
+ * `count`—take the same arguments as `where`, meaning you can easily add
+ * conditions to them without having to first call `where`. This means
+ * that the following two lines of code are functionally equivalent.
+ *
+ * ```php
+ * $query->where(['email' => 'hank.b@example.com'])->all();
+ * $query->all(['email' => 'hank.b@example.com']);
+ * ```
+ *
+ * ## Other conditions
+ *
+ * Aside from conditions you can also add joins, limits, offsets,
+ * aggregates, and sorting capabilities to your queries.
+ *
+ * ```php
+ * // Select specific columns. Aliases are supported as array keys
+ * $query->select(['column', 'column' => 'alias']);
+ *
+ * // GROUP BY
+ * $query->group(['max']);
+ *
+ * // HAVING—these methods have the same signature and behavior as "where"
+ * $query->having(['sum' => e\gt(5)]);
+ * $query->havingAny(['max' => e\lt(10)]);
+ *
+ * // INNER JOIN is added by default.
+ * $query->join('authors a', ['a.id' => 'book.author_id']);
+ *
+ * // Although different types of joins can be specified.
+ * $query->join('LEFT OUTER JOIN authors a', ['a.id' => 'book.author_id']);
+ *
+ * // The following work exactly as you'd expect.
+ * $query->order(['name' => 'asc']);
+ * $query->offset(10);
+ * $query->limit(10);
+ * ```
+ *
+ * ## Modifying data
+ *
  * There are also methods for modifying records.
  *
  * ```php
@@ -107,6 +189,7 @@ use DomainException;
  * $query->update(['name' => 'H. Preen']);
  *
  * // Delete records, returning number of affected rows.
+ * // This also takes the same arguments as `where`.
  * $query->delete();
  * ```
  *
@@ -115,50 +198,8 @@ use DomainException;
  * ```php
  * $query->raw('SELECT * FROM books WHERE email = ?', ['foo@example.com']);
  * ```
- *
- *
- * ## Complex expressions
- *
- * Each of `find`, `first`, `all`, `delete`, `where`, `whereAny`,
- * `having`, and `havingAny` take a few different types of expressions.
- * The types of expressions they take can range from very terse (such as
- * when selecting by primary key) to full-blown SQL.
- *
- * Take a look.
- *
- * ```php
- * // You can filter by ID, which is useful for find, first, and delete
- * $query->find(1);
- *
- * // You can filter by equality, which is useful for almost all methods
- * $query->all(['active' => true]);
- *
- * // It'll even figure out IN statements for ya
- * $query->all(['email' => [
- *   'rl.stine@example.com',
- *   'ka.applegate@example.com',
- *   'jk.rowling@example.com',
- * ]]);
- *
- * // You can filter using raw SQL, which is often easiest
- * // Hint: the second argument is used for escaped conditions
- * $query->first('email = ? and active',
- *   ['richie.brautwurst@example.com']);
- *
- * // You can even filter by more complex expressions...
- * use Mismatch\DB\Expression as e;
- *
- * // Like the every-useful LIKE filter
- * $query->where(['email' => e\like('%@example.com');
- *
- * // Or NOT, which comes up often
- * $query->whereAny(['email' => e\not('el.james@example.com')]);
- *
- * // Even IS NULL
- * $query->delete(['email' => e\null()]);
- * ```
  */
-class Query implements IteratorAggregate
+class Query implements IteratorAggregate, Countable
 {
     use Query\From;
     use Query\Join;
