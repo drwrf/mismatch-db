@@ -1,9 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
-    "hash": "b7d2d16aad7b041446fefb80182ca056",
+    "hash": "7c8cdba4a895a878eeb832a94db0ce35",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -596,6 +597,40 @@
             "time": "2012-12-19 10:50:58"
         },
         {
+            "name": "d11wtq/boris",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/d11wtq/boris.git",
+                "reference": "2a0a3d3a5f34d317577f8dcd98f5f578ad85109a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/d11wtq/boris/zipball/2a0a3d3a5f34d317577f8dcd98f5f578ad85109a",
+                "reference": "2a0a3d3a5f34d317577f8dcd98f5f578ad85109a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-pcntl": "Optional Process Control extension depencency",
+                "ext-posix": "Optional POSIX extension",
+                "ext-readline": "Optional readline extension depencency"
+            },
+            "bin": [
+                "bin/boris"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Boris": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "time": "2014-07-31 12:15:24"
+        },
+        {
             "name": "dompdf/dompdf",
             "version": "v0.6.1",
             "source": {
@@ -638,16 +673,16 @@
         },
         {
             "name": "erusev/parsedown",
-            "version": "1.0.1",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "d24439ada0704948deef0d3eda2ea20fd8db1747"
+                "reference": "c62365adc4488e1c35a8f45ea86f7d4a22bd58a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/d24439ada0704948deef0d3eda2ea20fd8db1747",
-                "reference": "d24439ada0704948deef0d3eda2ea20fd8db1747",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/c62365adc4488e1c35a8f45ea86f7d4a22bd58a0",
+                "reference": "c62365adc4488e1c35a8f45ea86f7d4a22bd58a0",
                 "shasum": ""
             },
             "type": "library",
@@ -673,7 +708,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2014-05-21 20:20:46"
+            "time": "2014-09-25 23:06:16"
         },
         {
             "name": "jms/metadata",
@@ -3654,8 +3689,10 @@
         "phpunit/phpunit": 20,
         "phpunit/php-code-coverage": 20,
         "phpunit/phpunit-mock-objects": 20,
-        "phpdocumentor/phpdocumentor": 20
+        "phpdocumentor/phpdocumentor": 20,
+        "d11wtq/boris": 20
     },
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.4"
     },

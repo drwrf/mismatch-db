@@ -39,7 +39,8 @@
         "phpunit/php-code-coverage": "2.0.*@dev",
         "phpunit/phpunit-mock-objects": "2.0.*@dev",
         "mockery/mockery": "0.9",
-        "phpdocumentor/phpdocumentor": "dev-master"
+        "phpdocumentor/phpdocumentor": "dev-master",
+        "d11wtq/boris": "dev-master"
     },
 
     "archive": {
