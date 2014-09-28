@@ -30,7 +30,7 @@ trait Where
      */
     public function where($conds, array $binds = [])
     {
-        if (is_int($conds)) {
+        if (is_int($conds) || (is_array($conds) && is_int(key($conds)))) {
             $conds = [$this->pk => $conds];
         }
 
