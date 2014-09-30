@@ -220,16 +220,16 @@ class Query implements IteratorAggregate, Countable
     private $pk;
 
     /**
-     * @var  array  The columns to select.
-     */
-    private $select = [];
-
-    /**
      * The strategy to use when returning individual results.
      *
      * @var  string
      */
     private $strategy;
+
+    /**
+     * @var  array  The columns to select.
+     */
+    private $select = [];
 
     /**
      * Constructor.
@@ -439,7 +439,7 @@ class Query implements IteratorAggregate, Countable
 
         // Wrap the statement in our own result type, so we have more
         // control over the interface that it exposes.
-        return $this->prepareStatement($stmt);
+        return $this->prepareStatement($stmt, $this->strategy);
     }
 
     /**
@@ -462,14 +462,15 @@ class Query implements IteratorAggregate, Countable
      * it's returned to the caller.
      *
      * @param  Doctrine\DBAL\Driver\Statement  $stmt
+     * @param  string                          $strategy
      * @api
      */
-    protected function prepareStatement($stmt)
+    protected function prepareStatement($stmt, $strategy)
     {
         $collection = new Collection($stmt);
 
-        if ($this->strategy) {
-            $collection->fetchAs($this->strategy);
+        if ($strategy) {
+            $collection->fetchAs($strategy);
         }
 
         return $collection;
