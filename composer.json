@@ -16,16 +16,16 @@
 
     "autoload": {
         "psr-4": {
-            "Mismatch\\DB\\": [ "lib" ]
+            "Mismatch\\": [ "lib" ]
         },
         "files": [
-            "lib/Expression.php"
+            "lib/DB/Expression.php"
         ]
     },
 
     "autoload-dev": {
         "psr-4": {
-            "Mismatch\\DB\\": [ "test" ]
+            "Mismatch\\": [ "test" ]
         }
     },
 
