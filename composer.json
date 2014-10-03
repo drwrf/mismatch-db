@@ -31,7 +31,7 @@
 
     "require": {
         "php": ">=5.4",
-        "doctrine/dbal": "2.5.*@dev"
+        "doctrine/dbal": "2.5.0-RC2"
     },
 
     "require-dev": {

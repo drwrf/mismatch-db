@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "7c1b02959a3010dedb022e8c9e2b0b2b",
+    "hash": "f24e799c4baf909caddf4f56f2815734",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -291,16 +291,16 @@
         },
         {
             "name": "doctrine/dbal",
-            "version": "dev-master",
+            "version": "v2.5.0-RC2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/dbal.git",
-                "reference": "7175964c30f4fd54c90f6f9c7c6f7bf49fc1c939"
+                "reference": "f7dbc5dfdefa1a2b536ee4c0bc3e98dab37e8b53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/7175964c30f4fd54c90f6f9c7c6f7bf49fc1c939",
-                "reference": "7175964c30f4fd54c90f6f9c7c6f7bf49fc1c939",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/f7dbc5dfdefa1a2b536ee4c0bc3e98dab37e8b53",
+                "reference": "f7dbc5dfdefa1a2b536ee4c0bc3e98dab37e8b53",
                 "shasum": ""
             },
             "require": {
@@ -358,7 +358,7 @@
                 "persistence",
                 "queryobject"
             ],
-            "time": "2014-09-17 17:17:21"
+            "time": "2014-09-11 21:07:20"
         },
         {
             "name": "doctrine/inflector",
@@ -3695,7 +3695,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "doctrine/dbal": 20,
+        "doctrine/dbal": 5,
         "phpunit/phpunit": 20,
         "phpunit/php-code-coverage": 20,
         "phpunit/phpunit-mock-objects": 20,
