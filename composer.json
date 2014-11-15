@@ -1,5 +1,5 @@
 {
-    "name": "drwrf/mismatch-db",
+    "name": "drwrf/mismatch-orm",
     "description": "A simple library for complex SQL.",
     "license": "MIT",
     "authors": [
@@ -19,7 +19,7 @@
             "Mismatch\\": [ "lib" ]
         },
         "files": [
-            "lib/DB/Expression.php"
+            "lib/ORM/Expression.php"
         ]
     },
 

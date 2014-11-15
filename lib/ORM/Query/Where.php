@@ -6,10 +6,10 @@
  * @author   ♥ <hi@drwrf.com>
  * @license  MIT
  */
-namespace Mismatch\DB\Query;
+namespace Mismatch\ORM\Query;
 
-use Mismatch\DB\Expression as e;
-use Mismatch\DB\Expression\Composite;
+use Mismatch\ORM\Expression as e;
+use Mismatch\ORM\Expression\Composite;
 
 /**
  * Adds WHERE functionality to a query builder.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mismatch\DB;
+namespace Mismatch\ORM;
 
 use Doctrine\DBAL\Types\Type;
 use DateTime;

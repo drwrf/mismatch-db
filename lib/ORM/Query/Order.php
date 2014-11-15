@@ -6,9 +6,9 @@
  * @author   ♥ <hi@drwrf.com>
  * @license  MIT
  */
-namespace Mismatch\DB\Query;
+namespace Mismatch\ORM\Query;
 
-use Mismatch\DB\Expression as e;
+use Mismatch\ORM\Expression as e;
 
 /**
  * Adds ORDER BY functionality to a query builder.

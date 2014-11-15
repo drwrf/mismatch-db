@@ -6,9 +6,9 @@
  * @author   ♥ <hi@drwrf.com>
  * @license  MIT
  */
-namespace Mismatch\DB\Expression;
+namespace Mismatch\ORM\Expression;
 
-use Mismatch\DB\Expression as e;
+use Mismatch\ORM\Expression as e;
 
 /**
  * Handles negating expressions.

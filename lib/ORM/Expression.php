@@ -6,9 +6,9 @@
  * @author   ♥ <hi@drwrf.com>
  * @license  MIT
  */
-namespace Mismatch\DB\Expression;
+namespace Mismatch\ORM\Expression;
 
-use Mismatch\DB\Expression as Expr;
+use Mismatch\ORM\Expression as Expr;
 
 /**
  * Returns a composite expression with each expression joined by AND.

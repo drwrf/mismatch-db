@@ -6,7 +6,7 @@
  * @author   ♥ <hi@drwrf.com>
  * @license  MIT
  */
-namespace Mismatch\DB\Expression;
+namespace Mismatch\ORM\Expression;
 
 /**
  * Interface for all expressions.

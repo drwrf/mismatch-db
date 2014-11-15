@@ -6,9 +6,9 @@
  * @author   ♥ <hi@drwrf.com>
  * @license  MIT
  */
-namespace Mismatch\DB\Query;
+namespace Mismatch\ORM\Query;
 
-use Mismatch\DB\Expression\Composite;
+use Mismatch\ORM\Expression\Composite;
 
 /**
  * Adds JOIN functionality to a query builder.

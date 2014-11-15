@@ -1,6 +1,6 @@
 <phpunit bootstrap="vendor/autoload.php">
     <listeners>
         <listener class="\Mockery\Adapter\Phpunit\TestListener"></listener>
-        <listener class="\Mismatch\DB\PHPUnit\TestListener"></listener>
+        <listener class="\Mismatch\ORM\PHPUnit\TestListener"></listener>
     </listeners>
 </phpunit>

@@ -1,8 +1,8 @@
 <?php
 
-namespace Mismatch\DB\Expression;
+namespace Mismatch\ORM\Expression;
 
-use Mismatch\DB\Expression as e;
+use Mismatch\ORM\Expression as e;
 
 class CompositeTest extends \PHPUnit_Framework_TestCase
 {

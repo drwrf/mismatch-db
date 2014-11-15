@@ -6,10 +6,10 @@
  * @author   ♥ <hi@drwrf.com>
  * @license  MIT
  */
-namespace Mismatch\DB;
+namespace Mismatch\ORM;
 
-use Mismatch\DB\Expression as e;
-use Mismatch\DB\Collection;
+use Mismatch\ORM\Expression as e;
+use Mismatch\ORM\Collection;
 use IteratorAggregate;
 use Countable;
 use Closure;
@@ -18,7 +18,7 @@ use DomainException;
 /**
  * Handles building an executing SQL queries.
  *
- * In conjunction with the factories provided by `Mismatch\DB\Expression`,
+ * In conjunction with the factories provided by `Mismatch\ORM\Expression`,
  * this becomes a powerful tool for building the queries common to CRUD
  * operations in web applications.
  *
@@ -26,8 +26,8 @@ use DomainException;
  * up for our service, and let's order them by name.
  *
  * ```php
- * use Mismatch\DB\Query;
- * use Mismatch\DB\Expression as e;
+ * use Mismatch\ORM\Query;
+ * use Mismatch\ORM\Expression as e;
  *
  * // We'll assume we've already created the connection elsewhere
  * $authors = (new Query($conn, 'authors'))
@@ -45,7 +45,7 @@ use DomainException;
  * ## Retrieving data
  *
  * For most applications, the majority of your queries will be used to
- * retrieve data from your database. As such, `Mismatch\DB` has quite
+ * retrieve data from your database. As such, `Mismatch\ORM` has quite
  * a few methods available to retrieve data.
  *
  * ```php
@@ -64,7 +64,7 @@ use DomainException;
  *
  * ## Conditions
  *
- * `Mismatch\DB` provides a few methods to add `WHERE` clauses to your
+ * `Mismatch\ORM` provides a few methods to add `WHERE` clauses to your
  * queries, so as to limit the number of records returned. These methods
  * can take a plethora of arguments, based on your use-case.
  *
@@ -86,10 +86,10 @@ use DomainException;
  * ```
  *
  * More complex expressions are also available using the API provided
- * by `Mismatch\DB\Expression`. The following expressions are available:
+ * by `Mismatch\ORM\Expression`. The following expressions are available:
  *
  * ```php
- * use Mismatch\DB\Expression as e;
+ * use Mismatch\ORM\Expression as e;
  *
  * // > and >=
  * $query->where(['logins' => e\gt(10)]);

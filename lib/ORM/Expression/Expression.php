@@ -1,6 +1,6 @@
 <?php
 
-namespace Mismatch\DB\Expression;
+namespace Mismatch\ORM\Expression;
 
 class Expression implements ExpressionInterface
 {

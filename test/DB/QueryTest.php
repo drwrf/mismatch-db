@@ -1,8 +1,8 @@
 <?php
 
-namespace Mismatch\DB;
+namespace Mismatch\ORM;
 
-use Mismatch\DB\Expression\Composite;
+use Mismatch\ORM\Expression\Composite;
 use Doctrine\DBAL\Types\Type;
 use Mockery;
 

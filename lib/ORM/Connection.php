@@ -6,7 +6,7 @@
  * @author   ♥ <hi@drwrf.com>
  * @license  MIT
  */
-namespace Mismatch\DB;
+namespace Mismatch\ORM;
 
 use Doctrine\DBAL\Cache\QueryCacheProfile as QCP;
 use Doctrine\DBAL\Connection as Base;

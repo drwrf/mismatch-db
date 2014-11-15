@@ -1,8 +1,8 @@
 <?php
 
-namespace Mismatch\DB\PHPUnit;
+namespace Mismatch\ORM\PHPUnit;
 
-use Mismatch\DB\Connection;
+use Mismatch\ORM\Connection;
 use PHPUnit_Framework_AssertionFailedError;
 use PHPUnit_Framework_TestListener;
 use PHPUnit_Framework_TestSuite;
