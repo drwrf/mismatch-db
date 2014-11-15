@@ -16,7 +16,7 @@ trait ORM
     {
         // The table that we want to connect the model to.
         $m['orm:table'] = function($m) {
-            return Inflector::tableize($m->getClass());
+            return ORM\Inflector::tableize($m->getClass());
         };
 
         // The primary key of the model, as an attribute.
