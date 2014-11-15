@@ -31,15 +31,16 @@
 
     "require": {
         "php": ">=5.4",
+        "doctrine/inflector": "~1",
         "doctrine/dbal": "~2.4"
     },
 
     "require-dev": {
+        "drwrf/mismatch-model": "~0.1",
         "phpunit/phpunit": "4.0.*@dev",
         "phpunit/php-code-coverage": "2.0.*@dev",
         "phpunit/phpunit-mock-objects": "2.0.*@dev",
         "mockery/mockery": "0.9",
-        "phpdocumentor/phpdocumentor": "dev-master",
         "d11wtq/boris": "dev-master"
     },
 
