@@ -29,6 +29,7 @@ class Mapper
         $this->class = $class;
         $this->attrs = $attrs;
     }
+
     /**
      * Maps a database result to an instance of a Mismatch model.
      *
