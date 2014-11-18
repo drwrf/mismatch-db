@@ -14,7 +14,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
 
         $this->conn = Mockery::mock('Doctrine\DBAL\Connection');
         $this->table = ['authors' => 'author'];
-        $this->pk = 'id';
+        $this->pk = (object) ['key' => 'id'];
 
         $this->subject = new Query($this->conn, $this->table, $this->pk);
     }

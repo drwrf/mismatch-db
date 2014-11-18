@@ -32,7 +32,7 @@ trait Where
     public function where($conds, array $binds = [])
     {
         if ($this->isPk($conds)) {
-            $conds = [$this->pk => $conds];
+            $conds = [$this->pk->key => $conds];
         }
 
         $this->getWhere()->all($conds, $binds);
@@ -51,7 +51,7 @@ trait Where
     public function whereAny($conds, array $binds = [])
     {
         if ($this->isPk($conds)) {
-            $conds = [$this->pk => $conds];
+            $conds = [$this->pk->key => $conds];
         }
 
         $this->getWhere()->any($conds, $binds);
@@ -70,7 +70,7 @@ trait Where
     public function exclude($conds, array $binds = [])
     {
         if ($this->isPk($conds)) {
-            $conds = [$this->pk => $conds];
+            $conds = [$this->pk->key => $conds];
         }
 
         $this->getWhere()->all(e\not(e\all($conds, $binds)));
@@ -89,7 +89,7 @@ trait Where
     public function excludeAny($conds, array $binds = [])
     {
         if ($this->isPk($conds)) {
-            $conds = [$this->pk => $conds];
+            $conds = [$this->pk->key => $conds];
         }
 
         $this->getWhere()->all(e\not(e\any($conds, $binds)));
