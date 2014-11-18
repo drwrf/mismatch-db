@@ -14,6 +14,7 @@ use IteratorAggregate;
 use Countable;
 use Closure;
 use DomainException;
+use Exception;
 
 /**
  * Handles building an executing SQL queries.
@@ -440,6 +441,28 @@ class Query implements IteratorAggregate, Countable
         // Wrap the statement in our own result type, so we have more
         // control over the interface that it exposes.
         return $this->prepareStatement($stmt, $this->strategy);
+    }
+
+    /**
+     * Executes a function inside of a transaction
+     *
+     * @param   Closure  $fn
+     * @return  mixed
+     * @throws  Exception
+     */
+    public function transactional(Closure $fn)
+    {
+        $this->conn->beginTransaction();
+
+        try {
+            $result = $fn($this);
+            $this->conn->commit();
+
+            return $result;
+        } catch (Exception $e) {
+            $this->conn->rollback();
+            throw $e;
+        }
     }
 
     /**
