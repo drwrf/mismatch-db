@@ -19,20 +19,9 @@ trait ORM
             return ORM\Inflector::tableize($m->getClass());
         };
 
-        // The primary key of the model, as an attribute.
-        $m['orm:pk'] = function($m) {
-            foreach ($m['attrs'] as $attr) {
-                if ($attr instanceof Primary) {
-                    return $attr;
-                }
-            }
-
-            throw new DomainException();
-        };
-
         // The default foreign key of the model, by name.
         $m['orm:fk'] = function($m) {
-            return $m['orm:table'] . '_id';
+            return ORM\Inflector::columnize($m->getClass()) . '_id';
         };
 
         // The connection the model will use to talk to the database.
@@ -48,9 +37,9 @@ trait ORM
             $query = new $m['orm:query_class'](
                 $m['orm:connection'],
                 $m['orm:table'],
-                $m['orm:pk']);
+                $m['pk']);
 
-            $query->setStrategy([$m['orm:mapper'], 'hydrate']);
+            $query->fetchAs([$m['orm:mapper'], 'hydrate']);
 
             return $query;
         });
