@@ -10,7 +10,7 @@ trait ORM
     /**
      * Installs the ORM-related functionality on a model.
      *
-     * @param  Model\Metadata  $m
+     * @param  Mismatch\Model\Metadata  $m
      */
     public static function usingORM($m)
     {
