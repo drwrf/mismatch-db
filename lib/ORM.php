@@ -37,15 +37,15 @@ trait ORM
 
         // The connection the model will use to talk to the database.
         $m['orm:connection'] = $m->factory(function ($m) {
-            return $m['orm:connection:class']::create($m['orm:credentials']);
+            return $m['orm:connection_class']::create($m['orm:credentials']);
         });
 
         // The class to use for this model's connection.
-        $m['orm:connection:class'] = 'Mismatch\ORM\Connection';
+        $m['orm:connection_class'] = 'Mismatch\ORM\Connection';
 
         // The query builder used for finding and modifying data
         $m['orm:query'] = $m->factory(function($m) {
-            $query = new $m['orm:query:class'](
+            $query = new $m['orm:query_class'](
                 $m['orm:connection'],
                 $m['orm:table'],
                 $m['orm:pk']);
@@ -54,6 +54,6 @@ trait ORM
         });
 
         // The class to use for query building.
-        $m['orm:query:class'] = 'Mismatch\ORM\Query';
+        $m['orm:query_class'] = 'Mismatch\ORM\Query';
     }
 }
