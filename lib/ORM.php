@@ -50,10 +50,20 @@ trait ORM
                 $m['orm:table'],
                 $m['orm:pk']);
 
+            $query->setStrategy([$m['orm:mapper'], 'hydrate']);
+
             return $query;
         });
 
         // The class to use for query building.
         $m['orm:query_class'] = 'Mismatch\ORM\Query';
+
+        // The mapper to user for mapping between the DB and PHP.
+        $m['orm:mapper'] = function($m) {
+            return new $m['orm:mapper_class']($m->getClass(), $m['attrs']);
+        };
+
+        // The class to use for mapping between the db and php.
+        $m['orm:mapper_class'] = 'Mismatch\ORM\Mapper';
     }
 }
