@@ -3,6 +3,7 @@
 namespace Mismatch;
 
 use Mismatch\Model\Metadata;
+use Mismatch\Mock;
 
 class ORMTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,6 +37,11 @@ class ORMTest extends \PHPUnit_Framework_TestCase
     public function testMapper()
     {
         $this->assertInstanceOf('Mismatch\ORM\Mapper', $this->subject['orm:mapper']);
+    }
+
+    public function testCallStatic()
+    {
+        $this->assertInstanceOf('Mismatch\ORM\Query', Mock\Orm::limit(1));
     }
 }
 

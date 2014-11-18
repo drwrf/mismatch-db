@@ -2,6 +2,9 @@
 
 namespace Mismatch;
 
+use Mismatch\ORM\Query;
+use Mismatch\Model\Metadata;
+
 /**
  * This Mismatch trait allows a model to interact with a database.
  */
@@ -54,5 +57,20 @@ trait ORM
 
         // The class to use for mapping between the db and php.
         $m['orm:mapper_class'] = 'Mismatch\ORM\Mapper';
+    }
+
+    /**
+     * Allows calling static methods on the class as if
+     * they were the start of query chains.
+     *
+     * @param   string  $method
+     * @param   array   $args
+     * @return  Query
+     */
+    public static function __callStatic($method, array $args)
+    {
+        $query = Metadata::get(get_called_class())['orm:query'];
+
+        return call_user_func_array([$query, $method], $args);
     }
 }
