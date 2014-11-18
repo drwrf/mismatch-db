@@ -14,7 +14,7 @@ class Mapper
     private $class;
 
     /**
-     * @var  Mismatch\Attrs
+     * @var  Attrs
      */
     private $attrs;
 
