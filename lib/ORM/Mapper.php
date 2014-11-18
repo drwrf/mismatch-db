@@ -3,15 +3,16 @@
 namespace Mismatch\ORM;
 
 use Mismatch\Model\Attrs;
+use Mismatch\Model\Metadata;
 use Mismatch\Model\Dataset;
 use Mismatch\Model\Attr\AttrInterface;
 
 class Mapper
 {
     /**
-     * @var  string
+     * @var  Metadata
      */
-    private $class;
+    private $metadata;
 
     /**
      * @var  Attrs
@@ -21,12 +22,12 @@ class Mapper
     /**
      * Constructor.
      *
-     * @param  string  $class
-     * @param  Attrs   $attrs
+     * @param  Metadata  $metadata
+     * @param  Attrs     $attrs
      */
-    public function __construct($class, $attrs)
+    public function __construct($metadata, $attrs)
     {
-        $this->class = $class;
+        $this->metadata = $metadata;
         $this->attrs = $attrs;
     }
 
@@ -46,7 +47,20 @@ class Mapper
 
         $dataset->markPersisted();
 
-        return new $this->class($dataset);
+        return $this->createModel($dataset);
+    }
+
+    /**
+     * Hook for creating a new model.
+     *
+     * @param   Dataset  $dataset
+     * @return  object
+     */
+    protected function createModel($dataset)
+    {
+        $class = $this->metadata->getClass();
+
+        return new $class($dataset);
     }
 
     /**

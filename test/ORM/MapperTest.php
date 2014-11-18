@@ -6,9 +6,16 @@ use Mockery;
 
 class MapperTest extends \PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        $this->metadata = Mockery::mock('Mismatch\Model\Metadata');
+        $this->metadata->shouldReceive('getClass')
+            ->andReturn('Mismatch\Mock\MappedModel');
+    }
+
     public function testHydrate_populatesResult()
     {
-        $subject = (new Mapper('Mismatch\Mock\MappedModel', []))->hydrate([
+        $subject = (new Mapper($this->metadata, []))->hydrate([
             'id' => 1,
             'name' => 'foo'
         ]);
@@ -30,7 +37,7 @@ class MapperTest extends \PHPUnit_Framework_TestCase
             ->with(Mockery::type('Mismatch\Model\Dataset'), 'foo')
             ->andReturn('bar');
 
-        $subject = (new Mapper('Mismatch\Mock\MappedModel', $attrs))->hydrate([
+        $subject = (new Mapper($this->metadata, $attrs))->hydrate([
             'key' => 'foo',
         ]);
 

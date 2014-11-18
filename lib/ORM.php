@@ -52,7 +52,7 @@ trait ORM
 
         // The mapper to user for mapping between the DB and PHP.
         $m['orm:mapper'] = function($m) {
-            return new $m['orm:mapper_class']($m->getClass(), $m['attrs']);
+            return new $m['orm:mapper_class']($m, $m['attrs']);
         };
 
         // The class to use for mapping between the db and php.
