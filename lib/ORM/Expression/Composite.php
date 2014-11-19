@@ -32,9 +32,9 @@ class Composite implements ExpressionInterface
      * @param  array         $params
      * @return $this
      */
-    public function all($expr, array $params = [])
+    public function all($expr, $params = [])
     {
-        $this->expr[] = ['AND', $expr, $params];
+        $this->expr[] = ['AND', $expr, (array) $params];
 
         return $this;
     }
@@ -46,9 +46,9 @@ class Composite implements ExpressionInterface
      * @param  array         $params
      * @return $this
      */
-    public function any($expr, array $params = [])
+    public function any($expr, $params = [])
     {
-        $this->expr[] = ['OR', $expr, $params];
+        $this->expr[] = ['OR', $expr, (array) $params];
 
         return $this;
     }

@@ -29,9 +29,9 @@ trait Where
      * @return self
      * @api
      */
-    public function where($conds, array $binds = [])
+    public function where($conds, array $binds = null)
     {
-        if ($this->isPk($conds)) {
+        if ($this->isPk($conds, $binds)) {
             $conds = [$this->pk->key => $conds];
         }
 
@@ -48,9 +48,9 @@ trait Where
      * @return self
      * @api
      */
-    public function whereAny($conds, array $binds = [])
+    public function whereAny($conds, array $binds = null)
     {
-        if ($this->isPk($conds)) {
+        if ($this->isPk($conds, $binds)) {
             $conds = [$this->pk->key => $conds];
         }
 
@@ -67,9 +67,9 @@ trait Where
      * @return self
      * @api
      */
-    public function exclude($conds, array $binds = [])
+    public function exclude($conds, array $binds = null)
     {
-        if ($this->isPk($conds)) {
+        if ($this->isPk($conds, $binds)) {
             $conds = [$this->pk->key => $conds];
         }
 
@@ -86,9 +86,9 @@ trait Where
      * @return self
      * @api
      */
-    public function excludeAny($conds, array $binds = [])
+    public function excludeAny($conds, array $binds = null)
     {
-        if ($this->isPk($conds)) {
+        if ($this->isPk($conds, $binds)) {
             $conds = [$this->pk->key => $conds];
         }
 
@@ -126,10 +126,16 @@ trait Where
 
     /**
      * @param   mixed  $conds
+     * @param   mixed  $binds
      * @return  bool
      */
-    private function isPk($conds)
+    private function isPk($conds, $binds)
     {
-        return is_int($conds) || (is_array($conds) && is_int(key($conds)));
+        if ($binds !== null) {
+            return false;
+        }
+
+        return (is_string($conds) || is_int($conds))
+            || (is_array($conds) && is_int(key($conds)));
     }
 }

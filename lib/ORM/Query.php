@@ -299,7 +299,7 @@ class Query implements IteratorAggregate, Countable
      * @return  mixed
      * @api
      */
-    public function find($query = null, $conds = [])
+    public function find($query = null, $conds = null)
     {
         $result = $this->first($query, $conds);
 
@@ -321,7 +321,7 @@ class Query implements IteratorAggregate, Countable
      * @return  mixed
      * @api
      */
-    public function first($query = null, $conds = [])
+    public function first($query = null, $conds = null)
     {
         $result = $this->limit(1)->all($query, $conds);
 
@@ -338,7 +338,7 @@ class Query implements IteratorAggregate, Countable
      * @return  Collection
      * @api
      */
-    public function all($query = null, $conds = [])
+    public function all($query = null, $conds = null)
     {
         if ($query) {
             $this->where($query, $conds);
@@ -368,9 +368,9 @@ class Query implements IteratorAggregate, Countable
      * @return  int
      * @api
      */
-    public function count($query = null, $conds = [])
+    public function count($query = null, $conds = null)
     {
-        return $this->all()->count();
+        return $this->all($query, $conds)->count();
     }
 
     /**
@@ -409,7 +409,7 @@ class Query implements IteratorAggregate, Countable
      * @return  int
      * @api
      */
-    public function delete($query = null, $conds = [])
+    public function delete($query = null, $conds = null)
     {
         if ($query) {
             $this->where($query, $conds);

@@ -18,7 +18,7 @@ use Mismatch\ORM\Expression as Expr;
  * @return  Expr\Composite
  * @api
  */
-function all($exprs, array $params = [])
+function all($exprs, $params = null)
 {
     return (new Expr\Composite())
         ->all($exprs, $params);
@@ -32,7 +32,7 @@ function all($exprs, array $params = [])
  * @return  Expr\Composite
  * @api
  */
-function any($exprs, $params = [])
+function any($exprs, $params = null)
 {
     return (new Expr\Composite())
         ->any($exprs, $params);
@@ -51,7 +51,7 @@ function any($exprs, $params = [])
  * @return  Expr\Expression
  * @api
  */
-function expr($expr, $binds = [])
+function expr($expr, $binds = null)
 {
     return new Expr\Expression($expr, $binds);
 }
