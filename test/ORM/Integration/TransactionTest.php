@@ -4,7 +4,7 @@ namespace Mismatch\ORM\Integration;
 
 use Exception;
 
-class TransactionTestCase extends \PHPUnit_Framework_TestCase
+class TransactionTest extends \PHPUnit_Framework_TestCase
 {
     use IntegrationTestCase;
 
