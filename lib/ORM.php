@@ -73,4 +73,14 @@ trait ORM
 
         return call_user_func_array([$query, $method], $args);
     }
+
+    /**
+     * Destroys the model.
+     *
+     * @throws  Exception
+     */
+    public function destroy()
+    {
+        $this->metadata['orm:mapper']->destroy($this);
+    }
 }

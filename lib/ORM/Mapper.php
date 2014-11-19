@@ -6,6 +6,7 @@ use Mismatch\Model\Attrs;
 use Mismatch\Model\Metadata;
 use Mismatch\Model\Dataset;
 use Mismatch\Model\Attr\AttrInterface;
+use Mismatch\ORM\Exception\UndestroyableModelException;
 
 class Mapper
 {
@@ -47,7 +48,7 @@ class Mapper
 
         $dataset->markPersisted();
 
-        return $this->createModel($dataset);
+        return $this->hydrateModel($dataset);
     }
 
     /**
@@ -56,11 +57,67 @@ class Mapper
      * @param   Dataset  $dataset
      * @return  object
      */
-    protected function createModel($dataset)
+    protected function hydrateModel($dataset)
     {
         $class = $this->metadata->getClass();
 
         return new $class($dataset);
+    }
+
+
+    /**
+     * Destroys a model.
+     *
+     * @param  object  $model
+     */
+    public function destroy($model)
+    {
+        $this->transactional(function($query) use ($model) {
+            return $this->destroyModel($query, $model);
+        });
+    }
+
+    /**
+     * Hook for destroying a model.
+     *
+     * This is run inside of a transaction, so any exceptions
+     * thrown will cause it to roll back.
+     *
+     * @param  Query   $query
+     * @param  object  $model
+     */
+    protected function destroyModel($query, $model)
+    {
+        $data = $model->dataset();
+
+        if (!$data->isPersisted()) {
+            throw new UndestroyableModelException($model);
+        }
+
+        $id = $model->id();
+
+        if (!$id || $query->delete($id) !== 1) {
+            throw new UndestroyableModelException($model);
+        }
+
+        $data->markDestroyed();
+    }
+
+    /**
+     * @return  Query
+     */
+    private function createQuery()
+    {
+        return $this->metadata['query'];
+    }
+
+    /**
+     * @param   Closure  $fn
+     * @return  Query
+     */
+    private function transactional($fn)
+    {
+        return $this->metadata['orm:query']->transactional($fn);
     }
 
     /**
