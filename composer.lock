@@ -470,16 +470,16 @@
         },
         {
             "name": "drwrf/mismatch-model",
-            "version": "0.1.7",
+            "version": "0.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drwrf/mismatch-model.git",
-                "reference": "21d0a88b7659d56a221a2e087f86cd3cd3872567"
+                "reference": "5b97d27af1bb1f990e58c3b942a26f40bc72a58d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drwrf/mismatch-model/zipball/21d0a88b7659d56a221a2e087f86cd3cd3872567",
-                "reference": "21d0a88b7659d56a221a2e087f86cd3cd3872567",
+                "url": "https://api.github.com/repos/drwrf/mismatch-model/zipball/5b97d27af1bb1f990e58c3b942a26f40bc72a58d",
+                "reference": "5b97d27af1bb1f990e58c3b942a26f40bc72a58d",
                 "shasum": ""
             },
             "require": {
@@ -517,7 +517,7 @@
                 }
             ],
             "description": "A simple library for complex types.",
-            "time": "2014-11-18 03:32:08"
+            "time": "2014-11-19 04:36:36"
         },
         {
             "name": "pimple/pimple",
