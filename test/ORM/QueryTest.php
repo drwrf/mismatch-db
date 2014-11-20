@@ -70,7 +70,7 @@ class QueryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException  DomainException
+     * @expectedException  Mismatch\ORM\Exception\ModelNotFoundException
      */
     public function test_find_missing()
     {

@@ -22,7 +22,12 @@ trait From
     private $from = [];
 
     /**
-     * @var  array  The tables to interact with.
+     * @var  array  The main table we're working with.
+     */
+    private $table;
+
+    /**
+     * @var  array  The main alias we're working with.
      */
     private $alias;
 
@@ -41,6 +46,7 @@ trait From
         // into something more specific like "alias.foo".
         if (!$this->alias) {
             $this->alias = is_array($table) ? current($table) : $table;
+            $this->table = is_array($table) ? key($table) : $table;
         }
 
         return $this;

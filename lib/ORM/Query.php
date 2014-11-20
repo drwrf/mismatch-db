@@ -10,10 +10,10 @@ namespace Mismatch\ORM;
 
 use Mismatch\ORM\Expression as e;
 use Mismatch\ORM\Collection;
+use Mismatch\ORM\Exception\ModelNotFoundException;
 use IteratorAggregate;
 use Countable;
 use Closure;
-use DomainException;
 use Exception;
 
 /**
@@ -295,7 +295,7 @@ class Query implements IteratorAggregate, Countable
      *
      * @param   mixed  $query
      * @param   mixed  $conds
-     * @throws  DomainException
+     * @throws  ModelNotFoundException
      * @return  mixed
      * @api
      */
@@ -304,8 +304,7 @@ class Query implements IteratorAggregate, Countable
         $result = $this->first($query, $conds);
 
         if (!$result) {
-            throw new DomainException(sprintf(
-                'Could not find a single record using "%s".', $this));
+            throw new ModelNotFoundException($this->table, $query);
         }
 
         return $result;
