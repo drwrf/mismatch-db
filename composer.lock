@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a5c8eecc5bbe0b6690b0ab76a5f8bf82",
+    "hash": "bebee7e0b851911d48002a37282215fb",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -470,16 +470,16 @@
         },
         {
             "name": "drwrf/mismatch-model",
-            "version": "0.1.9",
+            "version": "0.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drwrf/mismatch-model.git",
-                "reference": "4a1a29a532c6db29fe80ed8098421edb5b6470b9"
+                "reference": "db394f4762dbeb5aa67cfabeca6bb37ef971676c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drwrf/mismatch-model/zipball/4a1a29a532c6db29fe80ed8098421edb5b6470b9",
-                "reference": "4a1a29a532c6db29fe80ed8098421edb5b6470b9",
+                "url": "https://api.github.com/repos/drwrf/mismatch-model/zipball/db394f4762dbeb5aa67cfabeca6bb37ef971676c",
+                "reference": "db394f4762dbeb5aa67cfabeca6bb37ef971676c",
                 "shasum": ""
             },
             "require": {
@@ -517,7 +517,7 @@
                 }
             ],
             "description": "A simple library for complex types.",
-            "time": "2014-11-19 16:25:37"
+            "time": "2014-11-20 02:49:41"
         },
         {
             "name": "pimple/pimple",

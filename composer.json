@@ -19,7 +19,8 @@
             "Mismatch\\": [ "lib" ]
         },
         "files": [
-            "lib/ORM/Expression.php"
+            "lib/ORM/Expression.php",
+            "lib/ORM/Attrs.php"
         ]
     },
 
