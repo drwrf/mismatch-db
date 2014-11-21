@@ -20,10 +20,9 @@ class BelongsTo extends Relationship
     {
         parent::__construct($name, $opts);
 
-        // BelongsTo behaves a little bit differently from other
-        // relationships. As it actually represents a real column
-        // in the database so we should afford that.
-        $this->key = $this->resolveFk();
+        if (!$this->key || $this->key === $this->name) {
+            $this->key = $this->resolveFk();
+        }
     }
 
     /**
