@@ -7,7 +7,7 @@ class HasMany extends Relationship
     /**
      * {@inheritDoc}
      */
-    public function isValid($value)
+    public function isRelation($value)
     {
         return $value instanceof Query;
     }
@@ -15,7 +15,7 @@ class HasMany extends Relationship
     /**
      * {@inheritDoc}
      */
-    protected function loadRelationship($model)
+    protected function loadRelation($model)
     {
         // We don't actually load the model, simply start the WHERE
         // that will lead to a successful load of the model.

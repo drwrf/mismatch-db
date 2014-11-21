@@ -28,7 +28,7 @@ class BelongsTo extends Relationship
     /**
      * {@inheritDoc}
      */
-    public function isValid($value)
+    public function isRelation($value)
     {
         return is_a($value, $this->className());
     }
@@ -36,7 +36,7 @@ class BelongsTo extends Relationship
     /**
      * {@inheritDoc}
      */
-    protected function loadRelationship($model)
+    protected function loadRelation($model)
     {
         $value = $model->read($this->fk());
 

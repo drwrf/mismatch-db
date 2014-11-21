@@ -14,18 +14,18 @@ class BelongsToTest extends \PHPUnit_Framework_TestCase
         $this->relation = Mockery::mock('Mismatch\Model\Metadata');
     }
 
-    public function test_isValid()
+    public function test_isRelation()
     {
         $this->relation
             ->shouldReceive('getClass')
             ->andReturn('StdClass');
 
-        $this->assertTrue($this->createSubject()->isValid(new StdClass()));
-        $this->assertFalse($this->createSubject()->isValid(new ArrayObject()));
-        $this->assertFalse($this->createSubject()->isValid(null));
-        $this->assertFalse($this->createSubject()->isValid(1));
-        $this->assertFalse($this->createSubject()->isValid(''));
-        $this->assertFalse($this->createSubject()->isValid([]));
+        $this->assertTrue($this->createSubject() ->isRelation(new StdClass()));
+        $this->assertFalse($this->createSubject()->isRelation(new ArrayObject()));
+        $this->assertFalse($this->createSubject()->isRelation(null));
+        $this->assertFalse($this->createSubject()->isRelation(1));
+        $this->assertFalse($this->createSubject()->isRelation(''));
+        $this->assertFalse($this->createSubject()->isRelation([]));
     }
 
     public function test_pk_passed()

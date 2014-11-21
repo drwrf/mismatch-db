@@ -47,8 +47,8 @@ abstract class Relationship extends Attr
      */
     public function read($model, $value)
     {
-        if (!$this->isValid($value)) {
-            $value = $this->loadRelationship($model);
+        if (!$this->isRelation($value)) {
+            $value = $this->loadRelation($model);
         }
 
         return $value;
@@ -59,7 +59,7 @@ abstract class Relationship extends Attr
      */
     public function write($model, $value)
     {
-        if (!$this->isValid($value)) {
+        if (!$this->isRelation($value)) {
             throw new UnexpectedValueException();
         }
 
@@ -145,7 +145,7 @@ abstract class Relationship extends Attr
      * @param   mixed  $value
      * @return  mixed
      */
-    abstract public function isValid($value);
+    abstract public function isRelation($value);
 
     /**
      * Hook called when no foreign model has been loaded yet.
@@ -156,7 +156,7 @@ abstract class Relationship extends Attr
      * @param   Mismatch\Model  $model
      * @return  mixed
      */
-    abstract protected function loadRelationship($model);
+    abstract protected function loadRelation($model);
 
     /**
      * Should attempt to figure out the owner key based on the
