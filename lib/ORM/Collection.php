@@ -17,7 +17,7 @@ use UnexpectedValueException;
 /**
  * Represents a collection of results from a query.
  */
-class Collection implements Iterator, Countable
+class Collection implements Iterator
 {
     /**
      * The statement that this collection wraps over.
@@ -81,6 +81,20 @@ class Collection implements Iterator, Countable
     }
 
     /**
+     * Returns the first element in the result set.
+     *
+     * @return  mixed
+     */
+    public function first()
+    {
+        $this->rewind();
+
+        if ($this->valid()) {
+            return $this->current();
+        }
+    }
+
+    /**
      * Implementation of Iterator.
      *
      * @link  http://php.net/manual/en/class.iterator.php
@@ -141,18 +155,6 @@ class Collection implements Iterator, Countable
     public function next()
     {
         ++$this->position;
-    }
-
-    /**
-     * Implementation of the Countable interface.
-     *
-     * @param  mixed  $mode
-     * @return int
-     * @link   http://php.net/manual/en/class.countable.php
-     */
-    public function count($mode = COUNT_NORMAL)
-    {
-        return $this->stmt->rowCount();
     }
 
     /**
