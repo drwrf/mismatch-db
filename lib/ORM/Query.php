@@ -369,7 +369,11 @@ class Query implements IteratorAggregate, Countable
      */
     public function count($query = null, $conds = null)
     {
-        return $this->all($query, $conds)->count();
+        $clone = clone $this;
+        $clone->select(['COUNT(*)' => 'count']);
+        $clone->fetchAs('array');
+
+        return $clone->first()['count'];
     }
 
     /**
