@@ -3,6 +3,7 @@
 namespace Mismatch\ORM\Attr;
 
 use Mismatch\Model\Attr\Attr;
+use Mismatch\Model\Attr\AttrInterface;
 use Mismatch\Model\Metadata;
 use UnexpectedValueException;
 
