@@ -83,18 +83,6 @@ abstract class Relationship extends Attr
     }
 
     /**
-     * @return  Metadata
-     */
-    public function foreignMeta()
-    {
-        if (!$this->class instanceof Metadata) {
-            $this->class = Metadata::get($this->class);
-        }
-
-        return $this->class;
-    }
-
-    /**
      * Returns the owner key of the relationship.
      *
      * @return  string
@@ -120,6 +108,34 @@ abstract class Relationship extends Attr
         }
 
         return $this->fk;
+    }
+
+    /**
+     * @return  Mismatch\ORM\Query
+     */
+    protected function createQuery()
+    {
+        return $this->foreignMeta()['orm:query'];
+    }
+
+    /**
+     * @return  Mismatch\ORM\Query
+     */
+    protected function className()
+    {
+        return $this->foreignMeta()->getClass();
+    }
+
+    /**
+     * @return  Metadata
+     */
+    protected function foreignMeta()
+    {
+        if (!$this->class instanceof Metadata) {
+            $this->class = Metadata::get($this->class);
+        }
+
+        return $this->class;
     }
 
     /**

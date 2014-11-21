@@ -17,12 +17,9 @@ class HasMany extends Relationship
      */
     protected function loadRelationship($model)
     {
-        $query = $this->foreignMeta()['orm:query'];
-        $value = $model->read($this->pk());
-
         // We don't actually load the model, simply start the WHERE
         // that will lead to a successful load of the model.
-        return $query->where([
+        return $this->createQuery()->where([
             $this->fk() => $model->read($this->pk())
         ]);
     }

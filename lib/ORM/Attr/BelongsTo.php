@@ -30,7 +30,7 @@ class BelongsTo extends Relationship
      */
     public function isValid($value)
     {
-        return is_a($value, $this->foreignMeta()->getClass());
+        return is_a($value, $this->className());
     }
 
     /**
@@ -39,15 +39,13 @@ class BelongsTo extends Relationship
     protected function loadRelationship($model)
     {
         $value = $model->read($this->fk());
-        $meta  = $this->foreignMeta();
-        $query = $meta['orm:query'];
 
         if (!$value && $this->nullable) {
             return null;
         }
 
         if (!$value) {
-            throw new ModelNotFoundException($meta->getClass(), $value);
+            throw new ModelNotFoundException($this->className(), $value);
         }
 
         // Use the primary key only if it's declared. We can trust
@@ -57,8 +55,8 @@ class BelongsTo extends Relationship
         }
 
         return $this->nullable
-            ? $query->first($value)
-            : $query->find($value);
+            ? $this->createQuery()->first($value)
+            : $this->createQuery()->find($value);
     }
 
     /**
