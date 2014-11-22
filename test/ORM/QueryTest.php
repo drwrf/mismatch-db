@@ -379,5 +379,9 @@ class QueryTest extends \PHPUnit_Framework_TestCase
             ->shouldReceive('executeUpdate')
             ->with($sql, $params)
             ->andReturn(1);
+
+        $this->conn
+            ->shouldReceive('lastInsertId')
+            ->andReturn(0, 9999999);
     }
 }

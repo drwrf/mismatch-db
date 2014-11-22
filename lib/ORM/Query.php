@@ -387,7 +387,9 @@ class Query implements IteratorAggregate, Countable
     {
         list($query, $params) = $this->toInsert($data);
 
-        return $this->raw($query, $params);
+        $result = $this->raw($query, $params);
+
+        return $this->conn->lastInsertId();
     }
 
     /**
