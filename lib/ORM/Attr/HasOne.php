@@ -4,7 +4,7 @@ namespace Mismatch\ORM\Attr;
 
 use Mismatch\ORM\Exception\ModelNotFoundException;
 
-class HasOne extends Relationship
+class HasOne extends HasMany
 {
     /**
      * {@inheritDoc}
