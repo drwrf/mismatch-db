@@ -27,7 +27,11 @@ trait IntegrationTestCase
             $type = $options['type'];
             unset($options['type']);
 
-            $table->addColumn($name, $type, $options);
+            $column = $table->addColumn($name, $type, $options);
+
+            if (!empty($options['primary'])) {
+                $table->setPrimaryKey([$name]);
+            }
         }
 
         // Now that the model has run its callback, create the table.
