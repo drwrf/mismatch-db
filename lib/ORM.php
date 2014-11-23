@@ -75,6 +75,16 @@ trait ORM
     }
 
     /**
+     * Saves the model.
+     *
+     * @throws  Exception
+     */
+    public function persist()
+    {
+        $this->metadata['orm:mapper']->persist($this);
+    }
+
+    /**
      * Destroys the model.
      *
      * @throws  Exception
