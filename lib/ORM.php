@@ -19,7 +19,7 @@ trait ORM
     {
         // Auto-detect attributes.
         $m->extend('attrs', function($attrs, $m) {
-            $m['orm:attr_introspector']->populate($attrs);
+            $m['orm:attr_populator']->populate($attrs);
 
             return $attrs;
         });
@@ -66,12 +66,12 @@ trait ORM
         $m['orm:mapper_class'] = 'Mismatch\ORM\Mapper';
 
         // The attribute inspector used for determining types.
-        $m['orm:attr_introspector'] = function ($m) {
-            return new $m['orm:attr_introspector_class'](
+        $m['orm:attr_populator'] = function ($m) {
+            return new $m['orm:attr_populator_class'](
                 $m['orm:connection'], $m['orm:table']);
         };
 
-        $m['orm:attr_introspector_class'] = 'Mismatch\ORM\Attr\Introspector';
+        $m['orm:attr_populator_class'] = 'Mismatch\ORM\Attr\Populator';
     }
 
     /**

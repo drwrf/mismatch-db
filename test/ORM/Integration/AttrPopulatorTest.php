@@ -2,13 +2,13 @@
 
 namespace Mismatch\ORM\Integration;
 
-class AttrIntrospectionTest extends \PHPUnit_Framework_TestCase
+class AttrPopulatorTest extends \PHPUnit_Framework_TestCase
 {
     use IntegrationTestCase;
 
     public function setUp()
     {
-        $this->createTable('Mismatch\ORM\Integration\AttrIntrospection', [
+        $this->createTable('Mismatch\ORM\Integration\AttrPopulator', [
             'primary_key' => ['type' => 'integer', 'primary' => true],
             'nullable'    => ['type' => 'integer', 'notnull' => false],
             'defaulted'   => ['type' => 'string', 'default' => 'default!'],
@@ -16,7 +16,7 @@ class AttrIntrospectionTest extends \PHPUnit_Framework_TestCase
             'customized'  => ['type' => 'boolean'],
         ]);
 
-        $this->attrs = AttrIntrospection::metadata()['attrs'];
+        $this->attrs = AttrPopulator::metadata()['attrs'];
     }
 
     public function testPrimaryKey()
@@ -56,7 +56,7 @@ class AttrIntrospectionTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class AttrIntrospection extends IntegrationModel
+class AttrPopulator extends IntegrationModel
 {
     public static function init($m)
     {
