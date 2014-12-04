@@ -5,7 +5,7 @@ namespace Mismatch\ORM\Attr;
 use Mismatch\Model\Attr\Attr;
 use Mismatch\Model\Attr\AttrInterface;
 use Mismatch\Model\Metadata;
-use UnexpectedValueException;
+use Mismatch\ORM\Exception\InvalidRelationshipException;
 
 abstract class Relationship extends Attr
 {
@@ -60,7 +60,8 @@ abstract class Relationship extends Attr
     public function write($model, $value)
     {
         if (!$this->isRelation($value)) {
-            throw new UnexpectedValueException();
+            throw new InvalidRelationshipException(
+                get_class($model), $this->name, $value);
         }
 
         return $value;
