@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * This file is part of Mismatch.
+ *
+ * @author   ♥ <hi@drwrf.com>
+ * @license  MIT
+ */
 namespace Mismatch\ORM\Attr;
 
 class HasMany extends Relationship
