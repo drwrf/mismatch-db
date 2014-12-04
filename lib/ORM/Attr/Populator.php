@@ -85,9 +85,9 @@ class Populator
         $columns = $index->getColumns();
         $key = current($columns);
 
+        // We don't support composite primary keys quite yet.
         if (count($columns) > 1) {
-            throw new RuntimeException(
-                'Composite primary keys are not supported.');
+            return;
         }
 
         $attrs->set($this->deriveName($key), [
