@@ -6,9 +6,9 @@ use Mismatch\Model\Attrs;
 
 // Install native ORM types.
 foreach ([
-    'BelongsTo' => 'Mismatch\ORM\Attr\BelongsTo',
-    'HasMany' => 'Mismatch\ORM\Attr\HasMany',
-    'HasOne' => 'Mismatch\ORM\Attr\HasOne',
+    'belongs-to' => 'Mismatch\ORM\Attr\BelongsTo',
+    'has-many' => 'Mismatch\ORM\Attr\HasMany',
+    'has-one' => 'Mismatch\ORM\Attr\HasOne',
 ] as $name => $type) {
     Attrs::registerType($name, $type);
 }
