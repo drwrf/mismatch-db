@@ -32,7 +32,7 @@
 
     "require": {
         "php": ">=5.4",
-        "drwrf/mismatch-model": "~0.1",
+        "drwrf/mismatch-model": "~0.2",
         "doctrine/inflector": "~1",
         "doctrine/dbal": "~2.4"
     },
