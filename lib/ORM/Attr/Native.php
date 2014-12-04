@@ -21,7 +21,7 @@ class Native extends Primitive
     /**
      * {@inheritDoc}
      */
-    protected function castToPHP($value)
+    public function castToPHP($value)
     {
         return $this->type->convertToPHPValue($value, $this->getPlatform());
     }
@@ -29,7 +29,7 @@ class Native extends Primitive
     /**
      * {@inheritDoc}
      */
-    protected function castToNative($value)
+    public function castToNative($value)
     {
         return $this->type->convertToDatabaseValue($value, $this->getPlatform());
     }
