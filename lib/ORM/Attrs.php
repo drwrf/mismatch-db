@@ -20,7 +20,7 @@ use Mismatch\ORM\Attr\Native;
 $types = Type::getTypesMap();
 
 foreach ($types as $type => $class) {
-    Attrs::registerType($type, function($type, $name, $opts) {
+    Attrs::registerType($type, function($name, $opts) use ($type) {
        $opts['type'] = Type::getType($type);
 
        return new Native($name, $opts);
