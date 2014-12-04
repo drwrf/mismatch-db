@@ -58,7 +58,7 @@ class PersistModel extends IntegrationModel
     {
         parent::init($m);
 
-        $m->id = 'Primary';
-        $m->name = 'String';
+        $m->id = 'primary';
+        $m->name = 'string';
     }
 }

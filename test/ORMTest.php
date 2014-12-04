@@ -60,6 +60,6 @@ class Orm
             'driver' => 'pdo_sqlite'
         ];
 
-        $m->id = 'Primary';
+        $m->id = 'primary';
     }
 }

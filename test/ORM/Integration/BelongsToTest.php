@@ -73,13 +73,13 @@ class BelongsToModel extends IntegrationModel
     {
         parent::init($m);
 
-        $m->id = 'Primary';
+        $m->id = 'primary';
 
-        $m->parent = ['BelongsTo',
+        $m->parent = ['belongs-to',
             'class' => get_called_class(),
             'fk' => 'parent_id'];
 
-        $m->nullParent = ['BelongsTo?',
+        $m->nullParent = ['belongs-to?',
             'class' => get_called_class(),
             'fk' => 'parent_id',
             'pk' => 'id'];

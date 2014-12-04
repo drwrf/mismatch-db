@@ -92,7 +92,7 @@ class Populator
 
         $attrs->set($this->deriveName($key), [
             'key' => $key,
-            'type' => 'Primary',
+            'type' => 'primary',
         ]);
     }
 

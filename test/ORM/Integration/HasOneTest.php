@@ -73,13 +73,13 @@ class HasOneModel extends IntegrationModel
     {
         parent::init($m);
 
-        $m->id = 'Primary';
+        $m->id = 'primary';
 
-        $m->child = ['HasOne',
+        $m->child = ['has-one',
             'class' => get_called_class(),
             'fk' => 'parent_id'];
 
-        $m->nullChild = ['HasOne?',
+        $m->nullChild = ['has-one?',
             'class' => get_called_class(),
             'fk' => 'parent_id',
             'pk' => 'id'];

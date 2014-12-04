@@ -39,9 +39,9 @@ class HasManyModel extends IntegrationModel
     {
         parent::init($m);
 
-        $m->id = 'Primary';
+        $m->id = 'primary';
 
-        $m->children = ['HasMany',
+        $m->children = ['has-many',
             'class' => get_called_class(),
             'fk' => 'parent_id'];
     }

@@ -62,6 +62,6 @@ class DestroyModel extends IntegrationModel
     {
         parent::init($m);
 
-        $m->id = 'Primary';
+        $m->id = 'primary';
     }
 }
