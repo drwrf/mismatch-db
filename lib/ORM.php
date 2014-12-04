@@ -17,6 +17,13 @@ trait ORM
      */
     public static function usingORM($m)
     {
+        // Auto-detect attributes.
+        $m->extend('attrs', function($attrs, $m) {
+            $m['orm:attr_introspector']->populate($attrs);
+
+            return $attrs;
+        });
+
         // The table that we want to connect the model to.
         $m['orm:table'] = function($m) {
             return ORM\Inflector::tableize($m->getClass());
@@ -57,6 +64,14 @@ trait ORM
 
         // The class to use for mapping between the db and php.
         $m['orm:mapper_class'] = 'Mismatch\ORM\Mapper';
+
+        // The attribute inspector used for determining types.
+        $m['orm:attr_introspector'] = function ($m) {
+            return new $m['orm:attr_introspector_class'](
+                $m['orm:connection'], $m['orm:table']);
+        };
+
+        $m['orm:attr_introspector_class'] = 'Mismatch\ORM\Attr\Introspector';
     }
 
     /**
